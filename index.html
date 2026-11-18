@@ -357,15 +357,11 @@
         .btn-order:active { transform: scale(0.98); }
         .btn-order:hover { box-shadow: 0 0 30px rgba(37, 211, 102, 0.6); }
 
-
-
-
         @media (max-width: 768px) {
             .tombola-grid { gap: 5px; }
             .num-cell { font-size: 0.8em; min-height: 36px; border-radius: 6px; }
         }
-        /* Spazio lasciato libero a destra per il badge "Powered by Netlify".
-           Se il badge cambia dimensione, modifica solo questo valore. */
+
         :root { --badge-space: 195px; }
 
         .footer { justify-content: flex-start; padding-right: var(--badge-space); }
@@ -398,7 +394,6 @@
             .btn-order svg { display: none; }
         }
 
-        /* 🌌 Sfondo animato (delicato): immagine che deriva piano, luci morbide, neve leggera */
         body::before { content: ""; position: fixed; inset: -6%; z-index: -3; pointer-events: none; will-change: transform;
             background: linear-gradient(rgba(7, 19, 16, 0.88), rgba(7, 19, 16, 0.92)),
                         url('https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1600&auto=format&fit=crop') center / cover no-repeat;
@@ -424,7 +419,6 @@
             html::before { display: none; }
         }
 
-        /* ✨ Smartphone magico */
         .prize-magic { position: relative; isolation: isolate; overflow: hidden; border-radius: 14px; padding: 26px 22px 36px; margin-bottom: 12px; cursor: pointer; touch-action: manipulation; }
         .prize-rays { position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; margin: -280px 0 0 -280px; z-index: -2; border-radius: 50%;
             background: repeating-conic-gradient(from 0deg, rgba(255, 209, 102, 0.30) 0 5deg, transparent 5deg 20deg);
@@ -466,10 +460,9 @@
             .prize-shine { display: none; }
             .sparkle { opacity: 0.8; }
         }
-        /* 🔢 Tabellone ordinato: quadrati uguali, in fila da 10, senza sovrapposizioni */
+
         .tombola-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; }
         .num-cell { min-width: 0; min-height: 0; aspect-ratio: 1 / 1; padding: 0; line-height: 1; }
-        /* niente ingrandimento al tocco/hover: era quello a far "salire" il quadrato sopra i vicini */
         .num-cell:hover:not(.booked) { transform: none; border-color: rgba(255, 209, 102, 0.3); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2); }
         .num-cell.selected, .num-cell.selected:hover:not(.booked) { transform: none; border-color: #ffd166; box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4), 0 0 6px rgba(42, 157, 143, 0.8); }
         @media (hover: hover) {
@@ -480,9 +473,9 @@
             .tombola-grid { gap: 4px; }
             .num-cell { font-size: 0.78em; border-radius: 6px; }
         }
-        /* 💬 Nome completo al tocco sui numeri prenotati */
+
         .num-cell.booked { cursor: pointer; }
-        @media (max-width: 768px) { .num-cell span.owner { display: none; } } /* su telefono il nome nel quadrato è illeggibile: si legge nel fumetto */
+        @media (max-width: 768px) { .num-cell span.owner { display: none; } }
         @media (min-width: 769px) {
             .num-cell span.owner { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; max-width: 92%; font-size: 0.7em; line-height: 1.1; text-align: center; }
         }
@@ -497,7 +490,6 @@
             border-right: 1px solid var(--primary-glow); border-bottom: 1px solid var(--primary-glow); transform: translateX(-50%) rotate(45deg); }
         #ownerTip.below::after { bottom: auto; top: -7px; border: 0; border-left: 1px solid var(--primary-glow); border-top: 1px solid var(--primary-glow); }
 
-        /* ✨ Numero prenotato OGGI: luccica fino a mezzanotte, così lo noti subito */
         .num-cell.booked.new-today { z-index: 2; border-color: #fff; color: #fff;
             animation: todayPulse 1.6s ease-in-out infinite; }
         .num-cell.booked.new-today::after { content: ""; position: absolute; inset: 0; pointer-events: none; transform: translateX(-130%);
@@ -517,7 +509,6 @@
             .num-cell.booked.new-today { box-shadow: inset 0 3px 6px rgba(0,0,0,0.3), 0 0 14px rgba(255, 255, 255, 0.95), 0 0 24px rgba(255, 209, 102, 0.9); }
         }
 
-        /* ⏳ Conto alla rovescia compatto: stessa taglia e stile del banner "Clicca sui numeri" */
         .countdown-card { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px;
             margin: 0 0 14px; padding: 12px; border-radius: 14px; text-align: center;
             background: linear-gradient(90deg, rgba(42, 157, 143, 0.25), rgba(230, 57, 70, 0.25));
@@ -530,7 +521,6 @@
         .countdown-card.finita .countdown-title, .countdown-card.finita .countdown-time { display: none; }
         .countdown-card.finita .countdown-done { display: block; }
 
-        /* 📐 Tabellone basso e compatto: caselle rettangolari, meno spazio sopra e sotto */
         .tombola-section { padding: 12px 10px; }
         .tombola-header { font-size: 1em; margin-bottom: 2px; }
         .tombola-sub { font-size: 0.78em; margin-bottom: 8px; line-height: 1.3; }
@@ -542,7 +532,6 @@
             .num-cell span.owner { -webkit-line-clamp: 1; font-size: 0.6em; }
         }
 
-        /* 🎄 Sfondo natalizio: foto più visibile con velo verde-bordeaux, bagliori caldi, neve a due strati, lucine appese */
         body::before { background: linear-gradient(180deg, rgba(7, 19, 16, 0.62) 0%, rgba(9, 26, 21, 0.80) 55%, rgba(48, 9, 18, 0.88) 100%),
                         url('https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1600&auto=format&fit=crop') center / cover no-repeat; }
         body::after { background: radial-gradient(circle at 18% 22%, rgba(255, 209, 102, 0.20), transparent 42%),
@@ -567,7 +556,6 @@
         @keyframes xmasFall { to { transform: translateY(500px); } }
         @keyframes xmasSway { from { transform: translateX(-14px); } to { transform: translateX(14px); } }
 
-        /* 💡 Lucine di Natale appese sotto l'intestazione (due serie che si accendono a turno) */
         .xmas-lights { position: absolute; left: 0; right: 0; top: 100%; height: 30px; pointer-events: none;
             background: linear-gradient(#1b3b30, #1b3b30) 0 0 / 100% 2px no-repeat; }
         .xmas-lights::before, .xmas-lights::after { content: ""; position: absolute; inset: 0; background-repeat: repeat-x;
@@ -588,7 +576,6 @@
             .xmas-lights::before, .xmas-lights::after { animation: none; }
         }
 
-        /* ▬ Barra in fondo: stessa grafica dell'intestazione, senza scritte e molto bassa */
         :root { --bar-h: calc(12px + env(safe-area-inset-bottom, 0px)); }
         .footer-bar { position: fixed; left: 0; right: 0; bottom: 0; height: var(--bar-h); z-index: 101; pointer-events: none;
             background: rgba(7, 19, 16, 0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -596,19 +583,12 @@
         .footer { bottom: var(--bar-h); }
         body { padding-bottom: calc(122px + env(safe-area-inset-bottom, 0px)); }
 
-        /* 📝 Card nome e indirizzo: nascosta finché non si preme "Invia Scelta" con dei numeri scelti */
         .user-fields[hidden] { display: none !important; }
         .user-fields.reveal { animation: fieldsIn 0.45s ease-out both; }
         .user-fields-hint { margin-top: 10px; font-size: 0.8em; line-height: 1.35; color: var(--text-muted); text-align: center; }
         .user-fields-hint b { color: var(--primary-glow); }
         @keyframes fieldsIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
         @media (prefers-reduced-motion: reduce) { .user-fields.reveal { animation: none; } }
-
-        /* 🎯 Pulsante "Invia Scelta" al centro della barra (il badge Netlify non c'è più, niente spazio riservato) */
-        :root { --badge-space: 0px; }
-        .footer { justify-content: center; padding-right: 16px; padding-left: 16px; }
-        .btn-order { width: 100%; max-width: 420px; margin: 0 auto; justify-content: center; }
-        .btn-label { align-items: center; text-align: center; }
     </style>
 </head>
 <body>
@@ -702,12 +682,12 @@ const MY_NUMBER = "393803497603";
 const PRICE_PER_NUMBER = 4.00;
 let selectedNumbers = [];
 let bookedDatabase = {};
-let bookedAt = {}; // quando è stato prenotato ogni numero (serve per far luccicare quelli di oggi)
+let bookedAt = {}; 
 let db = null;
 
-// Configurazione Firebase integrata dal tuo progetto
+// Configurazione Firebase aggiornata con la nuova chiave API sicura
 const firebaseConfig = {
-    apiKey: "AIzaSyC2GLEbLUFDCZ1__MWMMgMArto6PCulSou",
+    apiKey: "AIzaSyAZ123456789... (INSERISCI_QUI_LA_TUA_NUOVA_CHIAVE)",
     authDomain: "tombola-29952.firebaseapp.com",
     projectId: "tombola-29952",
     storageBucket: "tombola-29952.appspot.com",
@@ -719,13 +699,12 @@ try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     
-    // Ascolta le prenotazioni in tempo reale sul cloud per tutti gli utenti
     db.collection("tombola").onSnapshot((snapshot) => {
         bookedDatabase = {};
         bookedAt = {};
         snapshot.forEach((doc) => {
             bookedDatabase[doc.id] = doc.data().cognome;
-            bookedAt[doc.id] = doc.data().prenotatoIl; // undefined per le vecchie prenotazioni, null mentre sta ancora salvando
+            bookedAt[doc.id] = doc.data().prenotatoIl; 
         });
         renderTombola();
     });
@@ -738,7 +717,6 @@ function escapeHtml(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-// true se la prenotazione è di oggi (le vecchie, senza data, non luccicano)
 function isBookedToday(v) {
     if (v === undefined) return false;
     const d = v === null ? new Date() : (v.toDate ? v.toDate() : new Date(v));
@@ -791,7 +769,7 @@ function toggleNumber(num) {
 
 function showUserFields() {
     const box = document.getElementById('userFields');
-    if (!box || !box.hidden) return false; // già visibile (oppure non esiste)
+    if (!box || !box.hidden) return false; 
     box.hidden = false;
     box.classList.remove('reveal'); void box.offsetWidth; box.classList.add('reveal');
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -814,7 +792,6 @@ function updateTotal() {
 async function sendWhatsApp() {
     if (selectedNumbers.length === 0) return alert("Seleziona almeno un numero dal tabellone!");
 
-    // 1° tocco: compare la card con nome e indirizzo; l'invio vero parte al 2° tocco
     if (showUserFields()) return;
 
     const cog = document.getElementById('cognome').value.trim();
@@ -865,7 +842,6 @@ async function sendWhatsApp() {
     if (waWindow) { waWindow.location.href = waUrl; } else { window.location.href = waUrl; }
 }
 
-/* 💬 Fumetto con il nome completo di chi ha prenotato */
 (function () {
     const tip = document.createElement('div');
     tip.id = 'ownerTip';
@@ -884,7 +860,7 @@ async function sendWhatsApp() {
         const cx = r.left + r.width / 2;
         const left = Math.max(8, Math.min(cx - t.width / 2, window.innerWidth - t.width - 8));
         let top = r.top - t.height - 10, below = false;
-        if (top < 84) { top = r.bottom + 10; below = true; } // 84 = spazio dell'header fisso
+        if (top < 84) { top = r.bottom + 10; below = true; }
         tip.style.left = left + 'px';
         tip.style.top = top + 'px';
         tip.style.setProperty('--ax', (cx - left) + 'px');
@@ -903,7 +879,6 @@ async function sendWhatsApp() {
     window.addEventListener('resize', hide);
 })();
 
-/* ✨ Magia sullo smartphone: scintille, e scoppio di stelle al tocco */
 (function () {
     const box = document.querySelector('.prize-magic');
     if (!box) return;
@@ -911,7 +886,6 @@ async function sendWhatsApp() {
     const colors = ['#ffd166', '#e63946', '#2a9d8f', '#ffffff'];
     const STAR = '\u2726\uFE0E';
 
-    // x%, y%, dimensione px, ritardo s
     [[6,12,18,0],[90,8,14,.6],[3,55,12,1.2],[93,50,20,1.8],[10,88,14,.9],[86,86,18,.3],[48,3,12,1.5],[70,93,12,2.1],[78,35,10,.4]]
         .forEach(([x, y, s, d]) => {
             const sp = document.createElement('span');
@@ -941,7 +915,6 @@ async function sendWhatsApp() {
         burst(e.clientX - r.left, e.clientY - r.top);
     });
 
-    // Scoppio di benvenuto la prima volta che il premio entra nello schermo
     if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
@@ -953,7 +926,6 @@ async function sendWhatsApp() {
     }
 })();
 
-/* ⏳ Conto alla rovescia: 22 dicembre 2026, ore 20:00 (ora italiana) */
 (function countdown() {
     const target = new Date('2026-12-22T20:00:00+01:00').getTime();
     const pad = (n) => String(n).padStart(2, '0');
@@ -977,7 +949,6 @@ async function sendWhatsApp() {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 
-/* 🌙 A mezzanotte la pagina si aggiorna da sola: i numeri di ieri smettono di luccicare */
 (function scheduleMidnight() {
     const n = new Date();
     const next = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1, 0, 0, 1);
