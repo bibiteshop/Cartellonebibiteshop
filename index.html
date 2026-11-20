@@ -1,823 +1,994 @@
-<!DOCTYPE html> <!-- Dichiara al browser che questo è un documento HTML5 moderno -->
-<html lang="it"> <!-- Radice della pagina HTML; lang="it" indica che la lingua è l'italiano -->
-<head> <!-- Intestazione tecnica: configura la pagina e carica stili e font -->
-    <meta charset="UTF-8"> <!-- Codifica caratteri per accenti, simboli (€) ed emoji -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"> <!-- Adatta layout e aree sicure allo schermo -->
-    <title>Bibiteshop</title> <!-- Titolo della scheda del browser -->
-    <meta name="theme-color" content="#2347FF"> <!-- Colora la barra del browser sui dispositivi supportati -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- Preconnessione verso Google Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- Preconnessione per i file dei caratteri -->
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..700&display=swap" rel="stylesheet"> <!-- Carica i font usati nel CSS -->
-    <style> /* Inizio foglio di stile CSS */
-:root{--cobalt:#2347FF;--cobalt-deep:#1B38D6;--lemon:#FFE14D;--ink:#0D1230;--paper:#F3F5FF;--tint:#EEF1FF;--line:#E4E8F8;--muted:#5B6390;--green:#25D366;--green-deep:#0A7A3A;--font-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;--font-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--header-h:calc(76px + env(safe-area-inset-top,0px));--shadow:0 1px 2px rgba(13,18,48,.05),0 14px 32px -16px rgba(35,71,255,.35)} /* Variabili CSS globali (colori, font, altezza header, ombra) */
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} /* Include bordi e padding nelle dimensioni; rimuove il flash grigio al tocco */
-::selection{background:var(--lemon);color:var(--ink)} /* Stile del testo evidenziato con cursore/dito */
-body{margin:0;background:var(--paper);color:var(--ink);font:400 1rem/1.4 var(--font-body);padding-bottom:calc(100px + env(safe-area-inset-bottom,0px));overflow-x:hidden} /* Sfondo, font base e spazio inferiore per la barra fissa */
-.container{width:100%;max-width:1200px;margin:0 auto;padding:16px} /* Contenitore centrale principale */
-button:focus-visible,.cat-header:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px} /* Evidenziazione visibile per navigazione da tastiera */
-
-/* Header */ /* Barra superiore fissa */
-.header-sticky{position:sticky;top:0;z-index:100;height:var(--header-h);padding:env(safe-area-inset-top,0px) 16px 0;display:flex;align-items:center;background:var(--cobalt);box-shadow:0 10px 24px -14px rgba(13,18,48,.7)}
-.header-top{width:100%;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.logo-container{display:flex;align-items:center;gap:12px;flex:1 1 auto;min-width:0}
-.logo-electric-wrapper{display:block;flex-shrink:0;padding:3px;border-radius:17px;background:var(--lemon)} /* Cornice gialla attorno al logo */
-.main-logo{display:block;height:50px;width:auto;border-radius:14px;background:#fff;padding:3px} /* Immagine logo */
-.header-title{margin:0;font-family:var(--font-display);font-weight:800;font-size:clamp(.95rem,4.2vw,1.12rem);line-height:1.02;letter-spacing:-.01em;color:#fff;text-wrap:balance}
-.badge-live::before{content:"";display:inline-block;width:.55em;height:.55em;margin-right:.4em;vertical-align:.05em;border-radius:50%;background:var(--green);animation:ping 2.2s ease-out infinite} /* Pallino verde animato */
-@keyframes ping{0%{box-shadow:0 0 0 0 rgba(37,211,102,.7)}70%,100%{box-shadow:0 0 0 .55em rgba(37,211,102,0)}}
-.search-container{flex:0 1 150px;min-width:120px}
-#productSearch{width:100%;padding:12px 16px;border:0;border-radius:999px;background:#fff;color:var(--ink);font:500 1rem var(--font-body);outline:none;transition:box-shadow .2s} /* Casella di ricerca */
-#productSearch::placeholder{color:#6A719B}
-#productSearch:focus{box-shadow:0 0 0 4px rgba(255,225,77,.75)}
-
-/* Avvisi */ /* Banner informativi */
-.scrolling-banner{background:#FFF6C2;border:2px solid var(--lemon);color:var(--ink);padding:12px 14px;border-radius:16px;margin-bottom:16px;font-weight:700;font-size:.95rem;text-align:center}
-.bounce-text{display:inline-block}
-.late-notice{display:none;background:#E4E9FF;border:1px solid rgba(35,71,255,.25);color:#1730B8;padding:12px 14px;border-radius:16px;margin-bottom:16px;font-weight:600;font-size:.95rem;text-align:center}
-.late-notice.show{display:block}
-
-/* Dati consegna */ /* Zona e card dati cliente */
-.user-fields{display:none;grid-template-columns:1fr;gap:12px;padding:20px;margin-bottom:20px;background:#fff;border-radius:22px;box-shadow:var(--shadow)}
-.user-fields strong{grid-column:1/-1;display:block;font:800 1.2rem/1.2 var(--font-display);letter-spacing:-.01em}
-.user-fields input,#zona{width:100%;padding:14px 16px;border:2px solid transparent;border-radius:14px;background-color:var(--tint);color:var(--ink);font:500 1rem var(--font-body);outline:none;transition:border-color .2s,background-color .2s,box-shadow .2s}
-.user-fields input::placeholder{color:#6A719B}
-.date-field-group{grid-column:1/-1;display:flex;flex-direction:column;gap:6px} /* Gruppo per etichetta e selettore data */
-.date-field-group label{font:700 .88rem/1.2 var(--font-body);color:var(--muted);padding-left:4px}
-.user-fields input[type="date"]{min-height:50px;cursor:pointer}
-#zona{appearance:none;-webkit-appearance:none;padding-right:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1.5l6 6 6-6' stroke='%232347FF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
-#zona option{background:#fff;color:var(--ink)}
-#zona{display:block;margin-bottom:20px;padding:17px 48px 17px 18px;border-radius:18px;background-color:#fff;box-shadow:var(--shadow);font-weight:700}
-.user-fields.show{display:grid;animation:fieldsIn .45s cubic-bezier(.16,1,.3,1)}
-@keyframes fieldsIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-.user-fields input:focus,#zona:focus{border-color:var(--cobalt);background-color:#fff;box-shadow:0 0 0 4px rgba(35,71,255,.14)}
-
-/* Categorie: una tinta per ciascuna */ /* Sezioni espandibili dei prodotti */
-.cat-container{--cat:#2347FF;--cat-rgb:35,71,255;margin-bottom:16px;border-radius:22px;background:#fff;box-shadow:var(--shadow)}
-.cat-header{position:sticky;top:var(--header-h);z-index:10;min-height:104px;padding:18px 18px 18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;user-select:none;color:#fff;font-family:var(--font-display);font-weight:800;font-size:1.55rem;line-height:1.02;letter-spacing:-.025em;background-color:var(--cat);background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:22px;transition:border-radius .35s ease}
-.cat-header.active{border-radius:22px 22px 0 0}
-.cat-header::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;background:linear-gradient(100deg,rgba(var(--cat-rgb),.96) 0%,rgba(var(--cat-rgb),.88) 40%,rgba(var(--cat-rgb),.4) 100%)}
-.cat-header>*{position:relative;z-index:2}
-.cat-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
-.cat-badge{display:none;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 9px;border-radius:999px;background:var(--green);color:#04210F;font:800 .85rem/1 var(--font-display);letter-spacing:0;box-shadow:0 0 0 2px #fff}
-.cat-badge.show{display:inline-flex}
-.cat-badge.pop{animation:badgePop .3s cubic-bezier(.175,.885,.32,1.275)}
-@keyframes badgePop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
-.arrow-box{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;transition:background .3s}
-.arrow{display:inline-block;font-size:.8rem;color:var(--cat);transition:transform .4s ease,color .3s}
-.cat-header.active .arrow-box{background:var(--lemon)}
-.cat-header.active .arrow{transform:rotate(180deg);color:var(--ink)}
-.cat-content{display:grid;grid-template-rows:0fr;padding:0 14px;overflow:hidden;background:#fff;border-radius:0 0 22px 22px;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1),padding .3s ease}
-.cat-content.active{grid-template-rows:1fr;padding:6px 14px 14px}
-.cat-inner{min-height:0;opacity:0;transform:translateY(-8px);transition:opacity .3s ease .1s,transform .3s ease .1s}
-.cat-content.active .cat-inner{opacity:1;transform:none}
-
-/* Prodotto */ /* Singola riga prodotto */
-.item{display:grid;grid-template-columns:60px minmax(0,1fr) auto;grid-template-areas:"img name qty" "img price qty";column-gap:12px;align-items:center;padding:12px 8px;border-bottom:1px solid var(--line);border-radius:14px;transition:background .2s}
-.item:last-child{border-bottom:0}
-.item-info{display:contents}
-.prod-img{grid-area:img;position:relative;width:60px;height:60px;padding:4px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:14px;cursor:pointer;transition:border-color .2s}
-.prod-img.img-pop{animation:popZoom .35s cubic-bezier(.175,.885,.32,1.275) forwards;z-index:15}
-@keyframes popZoom{0%{transform:scale(1)}50%{transform:scale(1.6) rotate(3deg);box-shadow:0 14px 30px -6px rgba(35,71,255,.55);border-color:var(--cobalt)}100%{transform:scale(1) rotate(0)}}
-.item-name{grid-area:name;align-self:end;font-weight:600;font-size:.98rem;line-height:1.25}
-.item-price{grid-area:price;align-self:start;margin-top:2px;font:700 1rem/1.2 var(--font-display);color:var(--cobalt-deep)}
-.qty-controls{grid-area:qty;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:var(--tint)}
-.qty-controls button{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:#fff;color:var(--cobalt-deep);font:800 1.2rem/1 var(--font-display);cursor:pointer;box-shadow:0 1px 2px rgba(13,18,48,.12);transition:transform .15s}
-.qty-controls button:last-child{background:var(--cobalt);color:#fff;box-shadow:none}
-.qty-controls button:active{transform:scale(.9)}
-.qty-controls input{width:30px;padding:0;border:0;background:transparent;color:var(--ink);font:800 1rem var(--font-display);text-align:center;outline:none}
-.item.selected{background:rgba(37,211,102,.12);box-shadow:inset 4px 0 0 var(--green)}
-.item.selected .item-name{color:var(--green-deep);font-weight:700}
-.item.selected .prod-img{border-color:var(--green)}
-.item.selected .qty-controls{background:rgba(37,211,102,.22)}
-.item.terminated{opacity:.45;filter:grayscale(80%)}
-.item.terminated .item-name{text-decoration:line-through}
-@media (hover:hover){.item:hover{background:#F7F8FF}.item.selected:hover{background:rgba(37,211,102,.16)}.prod-img:hover{border-color:var(--cobalt)}}
-.no-results{display:none;padding:40px;text-align:center;color:var(--muted);font-size:1.05rem}
-
-/* Anteprima carrello */ /* Riepilogo carrello a comparsa */
-.preview-pane{display:none;position:fixed;bottom:calc(92px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:600px;max-height:55vh;overflow-y:auto;padding:20px;background:#fff;border-radius:24px;box-shadow:0 30px 70px -20px rgba(13,18,48,.55),0 0 0 1px var(--line);z-index:102;animation:paneSlideUp .3s ease}
-@keyframes paneSlideUp{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
-.preview-pane h4{margin:0 0 12px;padding-bottom:12px;border-bottom:2px solid var(--line);font:800 1.25rem/1.2 var(--font-display);letter-spacing:-.01em}
-.preview-item{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;font-size:.98rem;color:#2A3158}
-.preview-item strong{color:var(--ink)}
-.preview-sep{border:0;border-top:2px solid var(--line);margin:12px 0}
-.preview-total{margin-top:6px;font:800 1.2rem/1.2 var(--font-display);color:var(--cobalt-deep)}
-.preview-total strong{color:inherit}
-.preview-warn{margin-top:12px;padding:10px 12px;border-radius:12px;background:#FFF6C2;color:#6B3F00;font-weight:600}
-.btn-clear{width:100%;margin-top:14px;padding:12px;border:0;border-radius:14px;background:#FFF0F1;color:#C4182D;font:700 .98rem var(--font-body);cursor:pointer}
-
-/* Barra in basso */ /* Footer fisso */
-.footer{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:center;align-items:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);box-shadow:0 -14px 30px -18px rgba(13,18,48,.3);z-index:101}
-.footer-btns{display:flex;gap:10px;width:100%;max-width:600px}
-.btn-preview{flex:1;padding:15px 12px;border:0;border-radius:16px;background:var(--tint);color:var(--cobalt-deep);font:700 .98rem var(--font-body);cursor:pointer}
-.btn-order{flex:2;display:flex;align-items:center;justify-content:center;padding:15px 12px;border:0;border-radius:16px;background:var(--green);color:#04210F;font:800 1.05rem/1.2 var(--font-display);cursor:pointer;box-shadow:0 12px 24px -10px rgba(37,211,102,.9);transition:transform .15s}
-.btn-order:active{transform:scale(.98)}
-
-/* Foto a schermo intero */ /* Lightbox immagine */
-.lightbox{display:none;position:fixed;inset:0;z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));background:rgba(13,18,48,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.lightbox.open{display:flex}
-.lightbox img{max-width:100%;max-height:75vh;object-fit:contain;padding:10px;background:#fff;border:3px solid var(--lemon);border-radius:20px}
-#lightbox-cap{color:#fff;font:700 1.1rem var(--font-display);text-align:center}
-.lightbox-close{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;width:44px;height:44px;border:0;border-radius:50%;background:#fff;color:var(--ink);font-size:1.1rem;cursor:pointer}
-
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-@media (min-width:600px){
-.header-sticky{padding-left:24px;padding-right:24px}
-.container{padding:20px 24px}
-.search-container{flex-basis:300px}
-.header-title{font-size:1.5rem}
-.user-fields{grid-template-columns:1fr 1fr}
-.cat-header{min-height:120px;font-size:1.8rem}
-}
-@media (min-width:992px){
-.cat-header{min-height:140px;padding:22px 28px;font-size:2rem}
-.cat-inner{display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
-}
-
-/* Tinta di ogni categoria + sfondi animati */ /* Colore e GIF di sfondo per ciascuna categoria */
-.cat-container:nth-of-type(1){--cat:#2347FF;--cat-rgb:35,71,255}
-.cat-container:nth-of-type(2){--cat:#0077C2;--cat-rgb:0,119,194}
-.cat-container:nth-of-type(3){--cat:#00807A;--cat-rgb:0,128,122}
-.cat-container:nth-of-type(4){--cat:#E5243B;--cat-rgb:229,36,59}
-.cat-container:nth-of-type(5){--cat:#3C7A1E;--cat-rgb:60,122,30}
-.cat-container:nth-of-type(6){--cat:#6A2BFF;--cat-rgb:106,43,255}
-.cat-container:nth-of-type(7){--cat:#B25E00;--cat-rgb:178,94,0}
-.cat-container:nth-of-type(8){--cat:#C2185B;--cat-rgb:194,24,91}
-.cat-container:nth-of-type(9){--cat:#2B3A67;--cat-rgb:43,58,103}
-.cat-container:nth-of-type(1) .cat-header { background-image: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2FsdnIyaGQwYzJhazZsYmcyeXh3MXh6ZmdmcHl4OGJmamozNDVyeiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HObxK0n8RINVI1O2Wi/giphy.gif') !important; }
-.cat-container:nth-of-type(2) .cat-header { background-image: url('https://usagif.com/wp-content/uploads/gifs/water-55.gif') !important; }
-.cat-container:nth-of-type(3) .cat-header { background-image: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmdkMXBqbno5Z3JvYzdzenhtcXEzb3RtZnphaTI5cG92M2J5ejE2bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o84U5RC5HkhbZiYgg/giphy.gif') !important; }
-.cat-container:nth-of-type(4) .cat-header { background-image: url('https://i.pinimg.com/originals/62/cb/9d/62cb9d55ad680366282b2a7c085e1000.gif') !important; }
-.cat-container:nth-of-type(5) .cat-header { background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/1400/a294f880150683.5cd98b2b44fc6.gif') !important; }
-.cat-container:nth-of-type(6) .cat-header { background-image: url('https://images.steamusercontent.com/ugc/9353342143072423107/4C0DC7A6C067E2E616D4A51BDB799D7BCB63CAC5/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true') !important; }
-.cat-container:nth-of-type(7) .cat-header { background-image: url('https://usagif.com/wp-content/uploads/gif/beer-10.gif') !important; }
-.cat-container:nth-of-type(8) .cat-header { background-image: url('https://prodigits.co.uk/pthumbs/screensavers/down/misc/orange_widVdVmG.gif') !important; }
-.cat-container:nth-of-type(9) .cat-header { background-image: url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyYXJvM2JiaHNtbXB0bHIyc3g1Z2xweHcyczBtYnptcThrN3ZkcDQwYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/hsbP4tFcYoR5LB0k39/source.gif') !important; }
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Cartellone Bibite Shop</title>
     
-/* Banner d'apertura: Numero di Natale */ /* Modale promozionale iniziale */
-.xmas-overlay{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(18px + env(safe-area-inset-bottom,0px));background:rgba(13,18,48,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.xmas-overlay.open{display:flex;animation:xmasFade .3s ease-out}
-.xmas-card{position:relative;width:100%;max-width:400px;max-height:100%;overflow-y:auto;padding:30px 22px 22px;border-radius:28px;background:#fff;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);animation:xmasPop .45s cubic-bezier(.16,1,.3,1)}
-.xmas-card::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;border-radius:28px 28px 0 0;background:repeating-linear-gradient(90deg,var(--cobalt) 0 18px,var(--lemon) 18px 36px)}
-.xmas-close{position:absolute;top:16px;right:12px;width:40px;height:40px;border:0;border-radius:50%;background:var(--tint);color:var(--ink);font-size:1rem;cursor:pointer}
-.xmas-emoji{font-size:2.6rem;line-height:1;margin-bottom:6px}
-.xmas-kicker{display:inline-block;margin-bottom:10px;padding:5px 12px;border-radius:999px;background:var(--lemon);color:var(--ink);font:800 .78rem var(--font-display);letter-spacing:.06em;text-transform:uppercase}
-.xmas-title{margin:0 0 8px;font:800 1.65rem/1.05 var(--font-display);letter-spacing:-.02em;color:var(--cobalt-deep);text-wrap:balance}
-.xmas-text{margin:0 0 14px;color:var(--muted);font-size:1rem;line-height:1.4}
-.xmas-text strong{color:var(--ink)}
-.xmas-facts{display:flex;gap:10px;margin:0 0 18px;padding:0;list-style:none}
-.xmas-facts li{flex:1;padding:10px 6px;border-radius:16px;background:var(--tint);font:700 .9rem/1.2 var(--font-body);color:var(--ink)}
-.xmas-facts small{display:block;margin-bottom:2px;color:var(--muted);font:600 .72rem var(--font-body);text-transform:uppercase;letter-spacing:.04em}
-.xmas-cta{display:block;width:100%;padding:16px 12px;border-radius:16px;background:var(--cobalt);color:#fff;text-decoration:none;font:800 1.1rem/1.2 var(--font-display);box-shadow:0 14px 26px -12px rgba(35,71,255,.9);transition:transform .15s}
-.xmas-cta:active{transform:scale(.98)}
-.xmas-later{margin-top:6px;padding:12px;border:0;background:none;color:var(--muted);font:600 .95rem var(--font-body);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-@keyframes xmasFade{from{opacity:0}to{opacity:1}}
-@keyframes xmasPop{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
-    </style> <!-- Fine foglio di stile CSS -->
-</head> <!-- Fine intestazione tecnica -->
-<body> <!-- Inizio corpo visibile della pagina HTML -->
+    <!-- Firebase SDK (Firestore) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-<div class="header-sticky"> <!-- Barra superiore fissa -->
+    <style>
+        :root { 
+            --primary-glow: #ffd166; /* Oro Natalizio */
+            --secondary-glow: #e63946; /* Rosso Festivo */
+            --wa-neon: #25d366;
+            --dark-bg: #0b1d19; /* Verde Notte Intenso */
+            --card-glass: rgba(18, 38, 32, 0.9);
+            --border-glass: rgba(255, 209, 102, 0.25);
+            --text-main: #f8f9fa;
+            --text-muted: #a8dadc;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #07130f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding-bottom: 110px;
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 15px; 
+        }
+
+        .header-sticky { 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            background: rgba(7, 19, 16, 0.92); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 12px 15px; 
+            border-bottom: 1px solid var(--border-glass);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6); 
+        }
+
+        .header-top { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            max-width: 900px;
+            margin: 0 auto;
+            gap: 12px;
+        }
+
+        .logo-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+
+        .logo-electric-wrapper {
+            position: relative;
+            display: inline-block;
+            border-radius: 12px;
+            padding: 3px;
+            background: linear-gradient(90deg, #e63946, #ffd166, #2a9d8f, #e63946);
+            background-size: 300% 300%;
+            animation: rotateElectric 2s linear infinite, electricFlicker 1.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 14px rgba(230, 57, 70, 0.6), 0 0 22px rgba(255, 209, 102, 0.4);
+        }
+
+        @keyframes rotateElectric {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes electricFlicker {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px #e63946); }
+            50% { opacity: 0.9; filter: drop-shadow(0 0 15px #ffd166); }
+        }
+
+        .main-logo { 
+            height: 48px; 
+            width: auto; 
+            border-radius: 9px; 
+            background: #fff;
+            padding: 3px;
+            display: block;
+        }
+
+        .header-title-box {
+            text-align: right;
+            margin-right: 80px;
+        }
+
+        .header-title { 
+            color: #fff; 
+            margin: 0; 
+            font-size: 1.05em; 
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .badge-live {
+            color: var(--primary-glow);
+            font-size: 0.8em;
+            text-shadow: 0 0 8px rgba(255, 209, 102, 0.6);
+            display: block;
+        }
+
+        .scrolling-banner {
+            background: linear-gradient(90deg, rgba(230, 57, 70, 0.25), rgba(42, 157, 143, 0.25));
+            border: 1px solid rgba(255, 209, 102, 0.4);
+            color: #ffd166;
+            padding: 12px;
+            border-radius: 14px;
+            margin: 20px 0;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(230, 57, 70, 0.2);
+            text-align: center;
+        }
+
+        .user-fields, .tombola-section, .prize-section { 
+            background: linear-gradient(135deg, rgba(18, 38, 32, 0.95), rgba(30, 20, 20, 0.9));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 20px; 
+            border-radius: 18px; 
+            margin-bottom: 22px; 
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(230, 57, 70, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-fields::before, .tombola-section::before, .prize-section::before {
+            content: "🎄";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 4rem;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .user-fields strong {
+            color: var(--primary-glow);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .user-fields input { 
+            width: 100%; 
+            padding: 13px 16px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            font-size: 0.95em; 
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s;
+        } 
+
+        .user-fields input:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 12px rgba(255, 209, 102, 0.3);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .tombola-section {
+            border: 2px solid var(--primary-glow);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 209, 102, 0.15);
+        }
+
+        .tombola-header {
+            text-align: center;
+            color: var(--primary-glow);
+            font-size: 1.15em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-shadow: 0 0 10px rgba(255, 209, 102, 0.5);
+        }
+
+        .tombola-sub {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85em;
+            margin-bottom: 16px;
+        }
+
+        .tombola-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+        }
+
+        .num-cell {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.5));
+            border: 1px solid rgba(255, 209, 102, 0.3);
+            border-radius: 10px;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            min-height: 42px;
+        }
+
+        .num-cell span.owner {
+            font-size: 0.55em;
+            color: var(--primary-glow);
+            display: block;
+            max-width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .num-cell:hover:not(.booked) {
+            transform: translateY(-2px) scale(1.08);
+            border-color: var(--primary-glow);
+            box-shadow: 0 6px 12px rgba(255, 209, 102, 0.4);
+        }
+
+        .num-cell.selected {
+            background: linear-gradient(135deg, #2a9d8f, #1d6f64);
+            color: #fff;
+            border-color: #ffd166;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 15px rgba(42, 157, 143, 0.8);
+        }
+
+        .num-cell.booked {
+            background: linear-gradient(135deg, #e63946, #9b111e);
+            color: #ffd166;
+            border-color: #ffd166;
+            cursor: not-allowed;
+            opacity: 0.9;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.5);
+        }
+
+        .prize-section {
+            border: 2px solid var(--secondary-glow);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(230, 57, 70, 0.15);
+            text-align: center;
+        }
+
+        .prize-header {
+            color: var(--secondary-glow);
+            font-size: 1.15em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+        }
+
+        .prize-card-3d {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.4));
+            border: 1px solid rgba(255, 209, 102, 0.3);
+            border-radius: 14px;
+            padding: 15px;
+            margin-top: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .prize-card-3d:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-glow);
+        }
+
+        .prize-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .prize-desc {
+            color: var(--text-main);
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .prize-desc strong {
+            color: var(--primary-glow);
+        }
+
+        .footer { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            width: 100%; 
+            background: rgba(7, 19, 16, 0.95); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 14px 16px; 
+            border-top: 1px solid rgba(255, 209, 102, 0.2); 
+            display: flex; 
+            justify-content: center;
+            align-items: center; 
+            box-sizing: border-box; 
+            z-index: 101; 
+        }
+
+        .btn-order { 
+            background: linear-gradient(135deg, #e63946 0%, #25d366 100%); 
+            color: #fff; 
+            border: none; 
+            padding: 14px 20px; 
+            border-radius: 14px; 
+            font-size: 1.05em; 
+            font-weight: 700; 
+            cursor: pointer; 
+            width: 100%;
+            max-width: 600px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); 
+            transition: all 0.2s; 
+            letter-spacing: 0.5px;
+        }
+
+        .btn-order:active { transform: scale(0.98); }
+        .btn-order:hover { box-shadow: 0 0 30px rgba(37, 211, 102, 0.6); }
+
+
+
+
+        @media (max-width: 768px) {
+            .tombola-grid { gap: 5px; }
+            .num-cell { font-size: 0.8em; min-height: 36px; border-radius: 6px; }
+        }
+        /* Spazio lasciato libero a destra per il badge "Powered by Netlify".
+           Se il badge cambia dimensione, modifica solo questo valore. */
+        :root { --badge-space: 195px; }
+
+        .footer { justify-content: flex-start; padding-right: var(--badge-space); }
+
+        .btn-order {
+            width: 100%;
+            padding: 10px 12px;
+            gap: 8px;
+            font-size: clamp(13px, 3.6vw, 16px);
+            line-height: 1.15;
+        }
+
+        .btn-order svg { width: 20px; height: 20px; margin: 0 !important; flex: 0 0 auto; }
+
+        .btn-label {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .btn-label small { font-size: 0.85em; font-weight: 600; opacity: 0.95; }
+
+        @media (min-width: 1000px) {
+            .footer { justify-content: center; padding-right: 16px; }
+        }
+
+        @media (max-width: 340px) {
+            .btn-order svg { display: none; }
+        }
+
+        /* 🌌 Sfondo animato (delicato): immagine che deriva piano, luci morbide, neve leggera */
+        body::before { content: ""; position: fixed; inset: -6%; z-index: -3; pointer-events: none; will-change: transform;
+            background: linear-gradient(rgba(7, 19, 16, 0.88), rgba(7, 19, 16, 0.92)),
+                        url('https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1600&auto=format&fit=crop') center / cover no-repeat;
+            animation: bgDrift 45s ease-in-out infinite alternate; }
+        body::after { content: ""; position: fixed; inset: -25%; z-index: -2; pointer-events: none; will-change: transform;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 209, 102, 0.13), transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(230, 57, 70, 0.12), transparent 40%),
+                        radial-gradient(circle at 65% 15%, rgba(42, 157, 143, 0.12), transparent 38%);
+            animation: glowDrift 28s ease-in-out infinite alternate; }
+        html::before { content: ""; position: fixed; left: 0; right: 0; top: -600px; bottom: 0; z-index: -1; pointer-events: none; opacity: 0.7; will-change: transform;
+            background-image: radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.55), transparent),
+                              radial-gradient(1.5px 1.5px at 90px 120px, rgba(255, 255, 255, 0.45), transparent),
+                              radial-gradient(2.5px 2.5px at 160px 220px, rgba(255, 255, 255, 0.5), transparent),
+                              radial-gradient(1.5px 1.5px at 130px 40px, rgba(255, 255, 255, 0.4), transparent),
+                              radial-gradient(2px 2px at 50px 170px, rgba(255, 255, 255, 0.5), transparent);
+            background-size: 300px 300px, 300px 300px, 300px 300px, 200px 200px, 200px 200px;
+            animation: snowFall 30s linear infinite; }
+        @keyframes bgDrift { from { transform: translate3d(-2%, -1.5%, 0) scale(1.02); } to { transform: translate3d(2%, 1.5%, 0) scale(1.08); } }
+        @keyframes glowDrift { from { transform: translate3d(-4%, 2%, 0) rotate(0deg); } to { transform: translate3d(4%, -3%, 0) rotate(12deg); } }
+        @keyframes snowFall { to { transform: translateY(600px); } }
+        @media (prefers-reduced-motion: reduce) {
+            body::before, body::after { animation: none; }
+            html::before { display: none; }
+        }
+
+        /* ✨ Smartphone magico */
+        .prize-magic { position: relative; isolation: isolate; overflow: hidden; border-radius: 14px; padding: 26px 22px 36px; margin-bottom: 12px; cursor: pointer; touch-action: manipulation; }
+        .prize-rays { position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; margin: -280px 0 0 -280px; z-index: -2; border-radius: 50%;
+            background: repeating-conic-gradient(from 0deg, rgba(255, 209, 102, 0.30) 0 5deg, transparent 5deg 20deg);
+            -webkit-mask-image: radial-gradient(circle, #000 15%, transparent 68%); mask-image: radial-gradient(circle, #000 15%, transparent 68%);
+            animation: raysSpin 24s linear infinite; }
+        .prize-aura { position: absolute; inset: 8% 6%; z-index: -1; border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(255, 209, 102, 0.55), rgba(230, 57, 70, 0.28) 50%, transparent 72%);
+            animation: auraPulse 3s ease-in-out infinite; }
+        .prize-float { position: relative; max-width: 340px; margin: 0 auto; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.8), 0 0 26px rgba(255, 209, 102, 0.6);
+            animation: levitate 3.6s ease-in-out infinite, goldGlow 3s ease-in-out infinite; }
+        .prize-float .prize-img { display: block; margin: 0; border: 0; border-radius: 0; }
+        .prize-shine { position: absolute; inset: 0; pointer-events: none; transform: translateX(-130%);
+            background: linear-gradient(115deg, transparent 38%, rgba(255, 196, 80, 0.55) 50%, transparent 62%);
+            animation: shineSweep 4s ease-in-out infinite; }
+        .prize-ground { position: absolute; left: 0; right: 0; bottom: 10px; margin: 0 auto; width: 55%; max-width: 190px; height: 14px; border-radius: 50%; z-index: -1;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 70%); animation: groundShadow 3.6s ease-in-out infinite; }
+        .sparkle { position: absolute; z-index: 2; line-height: 1; color: #ffd166; opacity: 0; pointer-events: none;
+            text-shadow: 0 0 8px #ffd166, 0 0 16px rgba(255, 209, 102, 0.7); animation: twinkle 2.6s ease-in-out infinite; }
+        .burst { position: absolute; z-index: 3; font-size: 14px; line-height: 1; pointer-events: none; color: var(--c, #ffd166);
+            text-shadow: 0 0 8px currentColor; animation: burst 0.9s ease-out forwards; }
+
+        @keyframes raysSpin { to { transform: rotate(360deg); } }
+        @keyframes auraPulse { 0%, 100% { opacity: 0.55; transform: scale(0.92); } 50% { opacity: 1; transform: scale(1.08); } }
+        @keyframes levitate { 0%, 100% { transform: translateY(0) rotate(-0.6deg); } 50% { transform: translateY(-9px) rotate(0.6deg); } }
+        @keyframes goldGlow {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.6), 0 0 18px rgba(255, 209, 102, 0.45); }
+            50% { box-shadow: 0 0 0 2px rgba(255, 209, 102, 1), 0 0 34px rgba(255, 209, 102, 0.85), 0 0 60px rgba(230, 57, 70, 0.35); }
+        }
+        @keyframes shineSweep { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+        @keyframes groundShadow { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(0.8); opacity: 0.4; } }
+        @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(90deg); } }
+        @keyframes burst {
+            from { opacity: 1; transform: translate(-50%, -50%) scale(0.4); }
+            to { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2) rotate(180deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .prize-rays, .prize-aura, .prize-float, .prize-ground, .sparkle { animation: none; }
+            .prize-shine { display: none; }
+            .sparkle { opacity: 0.8; }
+        }
+        /* 🔢 Tabellone ordinato: quadrati uguali, in fila da 10, senza sovrapposizioni */
+        .tombola-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; }
+        .num-cell { min-width: 0; min-height: 0; aspect-ratio: 1 / 1; padding: 0; line-height: 1; }
+        /* niente ingrandimento al tocco/hover: era quello a far "salire" il quadrato sopra i vicini */
+        .num-cell:hover:not(.booked) { transform: none; border-color: rgba(255, 209, 102, 0.3); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2); }
+        .num-cell.selected, .num-cell.selected:hover:not(.booked) { transform: none; border-color: #ffd166; box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4), 0 0 6px rgba(42, 157, 143, 0.8); }
+        @media (hover: hover) {
+            .num-cell:hover:not(.booked):not(.selected) { border-color: var(--primary-glow); box-shadow: 0 0 8px rgba(255, 209, 102, 0.45); }
+        }
+        @media (max-width: 768px) {
+            .tombola-section { padding: 16px 10px; }
+            .tombola-grid { gap: 4px; }
+            .num-cell { font-size: 0.78em; border-radius: 6px; }
+        }
+        /* 💬 Nome completo al tocco sui numeri prenotati */
+        .num-cell.booked { cursor: pointer; }
+        @media (max-width: 768px) { .num-cell span.owner { display: none; } } /* su telefono il nome nel quadrato è illeggibile: si legge nel fumetto */
+        @media (min-width: 769px) {
+            .num-cell span.owner { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; max-width: 92%; font-size: 0.7em; line-height: 1.1; text-align: center; }
+        }
+        #ownerTip { position: fixed; left: 0; top: 0; z-index: 150; width: max-content; max-width: min(260px, calc(100vw - 16px));
+            padding: 10px 14px; border-radius: 12px; background: #12261f; border: 1px solid var(--primary-glow); text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 14px rgba(255, 209, 102, 0.3);
+            pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s; }
+        #ownerTip.show { opacity: 1; visibility: visible; }
+        #ownerTip small { display: block; font-size: 0.72em; color: var(--text-muted); margin-bottom: 2px; }
+        #ownerTip strong { display: block; font-size: 1.05em; line-height: 1.25; color: var(--primary-glow); overflow-wrap: anywhere; }
+        #ownerTip::after { content: ""; position: absolute; left: var(--ax, 50%); bottom: -7px; width: 12px; height: 12px; background: #12261f;
+            border-right: 1px solid var(--primary-glow); border-bottom: 1px solid var(--primary-glow); transform: translateX(-50%) rotate(45deg); }
+        #ownerTip.below::after { bottom: auto; top: -7px; border: 0; border-left: 1px solid var(--primary-glow); border-top: 1px solid var(--primary-glow); }
+
+        /* ✨ Numero prenotato OGGI: luccica fino a mezzanotte, così lo noti subito */
+        .num-cell.booked.new-today { z-index: 2; border-color: #fff; color: #fff;
+            animation: todayPulse 1.6s ease-in-out infinite; }
+        .num-cell.booked.new-today::after { content: ""; position: absolute; inset: 0; pointer-events: none; transform: translateX(-130%);
+            background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.85) 50%, transparent 65%);
+            animation: todaySweep 2.2s ease-in-out infinite; }
+        .num-cell.booked.new-today::before { content: "\2726\FE0E"; position: absolute; top: 2px; right: 3px; font-size: 0.7em; line-height: 1;
+            color: #fff; text-shadow: 0 0 6px #ffd166, 0 0 12px #ffd166; animation: todayTwinkle 1.2s ease-in-out infinite; }
+        @keyframes todayPulse {
+            0%, 100% { box-shadow: inset 0 3px 6px rgba(0,0,0,0.5), 0 0 6px rgba(255, 209, 102, 0.7), 0 0 12px rgba(255, 209, 102, 0.4); filter: brightness(1); }
+            50% { box-shadow: inset 0 3px 6px rgba(0,0,0,0.3), 0 0 14px rgba(255, 255, 255, 0.95), 0 0 28px rgba(255, 209, 102, 0.9); filter: brightness(1.35); }
+        }
+        @keyframes todaySweep { 0%, 35% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+        @keyframes todayTwinkle { 0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(90deg); } }
+        @media (prefers-reduced-motion: reduce) {
+            .num-cell.booked.new-today, .num-cell.booked.new-today::before { animation: none; }
+            .num-cell.booked.new-today::after { display: none; }
+            .num-cell.booked.new-today { box-shadow: inset 0 3px 6px rgba(0,0,0,0.3), 0 0 14px rgba(255, 255, 255, 0.95), 0 0 24px rgba(255, 209, 102, 0.9); }
+        }
+
+        /* ⏳ Conto alla rovescia compatto: stessa taglia e stile del banner "Clicca sui numeri" */
+        .countdown-card { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px;
+            margin: 0 0 14px; padding: 12px; border-radius: 14px; text-align: center;
+            background: linear-gradient(90deg, rgba(42, 157, 143, 0.25), rgba(230, 57, 70, 0.25));
+            border: 1px solid rgba(255, 209, 102, 0.4); box-shadow: 0 0 20px rgba(230, 57, 70, 0.2);
+            color: #ffd166; font-size: 0.9em; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .countdown-time { display: inline-flex; gap: 10px; align-items: baseline; }
+        .cd-unit b { color: #fff; font-size: 1.15em; letter-spacing: 0; font-variant-numeric: tabular-nums; text-shadow: 0 0 8px rgba(255, 209, 102, 0.5); }
+        .cd-unit small { margin-left: 1px; font-size: 0.75em; letter-spacing: 0; text-transform: lowercase; color: var(--text-muted); }
+        .countdown-done { display: none; }
+        .countdown-card.finita .countdown-title, .countdown-card.finita .countdown-time { display: none; }
+        .countdown-card.finita .countdown-done { display: block; }
+
+        /* 📐 Tabellone basso e compatto: caselle rettangolari, meno spazio sopra e sotto */
+        .tombola-section { padding: 12px 10px; }
+        .tombola-header { font-size: 1em; margin-bottom: 2px; }
+        .tombola-sub { font-size: 0.78em; margin-bottom: 8px; line-height: 1.3; }
+        .tombola-grid { max-width: 560px; margin-left: auto; margin-right: auto; gap: 4px; }
+        .num-cell { aspect-ratio: 1.2 / 1; }
+        @media (min-width: 769px) {
+            .tombola-grid { gap: 5px; }
+            .num-cell { aspect-ratio: 1.6 / 1; }
+            .num-cell span.owner { -webkit-line-clamp: 1; font-size: 0.6em; }
+        }
+
+        /* 🎄 Sfondo natalizio: foto più visibile con velo verde-bordeaux, bagliori caldi, neve a due strati, lucine appese */
+        body::before { background: linear-gradient(180deg, rgba(7, 19, 16, 0.62) 0%, rgba(9, 26, 21, 0.80) 55%, rgba(48, 9, 18, 0.88) 100%),
+                        url('https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1600&auto=format&fit=crop') center / cover no-repeat; }
+        body::after { background: radial-gradient(circle at 18% 22%, rgba(255, 209, 102, 0.20), transparent 42%),
+                        radial-gradient(circle at 85% 68%, rgba(230, 57, 70, 0.19), transparent 42%),
+                        radial-gradient(circle at 60% 12%, rgba(42, 157, 143, 0.16), transparent 40%),
+                        radial-gradient(circle at 10% 88%, rgba(230, 57, 70, 0.14), transparent 40%); }
+
+        .xmas-snow { position: fixed; top: 0; bottom: 0; left: -30px; right: -30px; z-index: -1; pointer-events: none; overflow: hidden;
+            animation: xmasSway 7s ease-in-out infinite alternate; }
+        .xmas-snow::before, .xmas-snow::after { content: ""; position: absolute; left: 0; right: 0; top: -500px; bottom: 0; will-change: transform; }
+        .xmas-snow::before { opacity: 0.95; background-size: 500px 500px; animation: xmasFall 24s linear infinite;
+            background-image: radial-gradient(4px 4px at 40px 60px, rgba(255, 255, 255, 0.95), transparent 70%),
+                              radial-gradient(3px 3px at 220px 160px, rgba(255, 255, 255, 0.9), transparent 70%),
+                              radial-gradient(5px 5px at 380px 300px, rgba(255, 255, 255, 0.85), transparent 70%),
+                              radial-gradient(3.5px 3.5px at 120px 420px, rgba(255, 255, 255, 0.9), transparent 70%),
+                              radial-gradient(4.5px 4.5px at 300px 470px, rgba(255, 255, 255, 0.85), transparent 70%); }
+        .xmas-snow::after { opacity: 0.75; background-size: 250px 250px; animation: xmasFall 13s linear infinite;
+            background-image: radial-gradient(2.5px 2.5px at 70px 90px, rgba(255, 255, 255, 0.9), transparent 70%),
+                              radial-gradient(2px 2px at 180px 40px, rgba(255, 255, 255, 0.85), transparent 70%),
+                              radial-gradient(2.5px 2.5px at 130px 190px, rgba(255, 255, 255, 0.9), transparent 70%),
+                              radial-gradient(2px 2px at 20px 210px, rgba(255, 255, 255, 0.8), transparent 70%); }
+        @keyframes xmasFall { to { transform: translateY(500px); } }
+        @keyframes xmasSway { from { transform: translateX(-14px); } to { transform: translateX(14px); } }
+
+        /*  Lucine di Natale appese sotto l'intestazione (due serie che si accendono a turno) */
+        .xmas-lights { position: absolute; left: 0; right: 0; top: 100%; height: 30px; pointer-events: none;
+            background: linear-gradient(#1b3b30, #1b3b30) 0 0 / 100% 2px no-repeat; }
+        .xmas-lights::before, .xmas-lights::after { content: ""; position: absolute; inset: 0; background-repeat: repeat-x;
+            animation: xmasBlink 1.6s ease-in-out infinite; }
+        .xmas-lights::before {
+            background-image: linear-gradient(90deg, #1b3b30 0 2px, transparent 2px),
+                              linear-gradient(90deg, transparent 0 48px, #1b3b30 48px 50px, transparent 50px),
+                              radial-gradient(circle at 12px 15px, #ff5a5f 0 4px, rgba(255, 90, 95, 0.5) 5px, transparent 12px),
+                              radial-gradient(circle at 60px 15px, #4cc9f0 0 4px, rgba(76, 201, 240, 0.5) 5px, transparent 12px);
+            background-position: 11px 2px, 11px 2px, 0 0, 0 0;
+            background-size: 96px 9px, 96px 9px, 96px 30px, 96px 30px; }
+        .xmas-lights::after { animation-delay: -0.8s; background-size: 96px 30px;
+            background-image: radial-gradient(circle at 36px 15px, #ffd166 0 4px, rgba(255, 209, 102, 0.5) 5px, transparent 12px),
+                              radial-gradient(circle at 84px 15px, #57e389 0 4px, rgba(87, 227, 137, 0.5) 5px, transparent 12px); }
+        @keyframes xmasBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        @media (prefers-reduced-motion: reduce) {
+            .xmas-snow { display: none; }
+            .xmas-lights::before, .xmas-lights::after { animation: none; }
+        }
+
+        /* ▬ Barra in fondo: stessa grafica dell'intestazione, senza scritte e molto bassa */
+        :root { --bar-h: calc(12px + env(safe-area-inset-bottom, 0px)); }
+        .footer-bar { position: fixed; left: 0; right: 0; bottom: 0; height: var(--bar-h); z-index: 101; pointer-events: none;
+            background: rgba(7, 19, 16, 0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-glass); box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6); }
+        .footer { bottom: var(--bar-h); }
+        body { padding-bottom: calc(122px + env(safe-area-inset-bottom, 0px)); }
+
+        /*  Card nome e indirizzo: nascosta finché non si preme "Invia Scelta" con dei numeri scelti */
+        .user-fields[hidden] { display: none !important; }
+        .user-fields.reveal { animation: fieldsIn 0.45s ease-out both; }
+        .user-fields-hint { margin-top: 10px; font-size: 0.8em; line-height: 1.35; color: var(--text-muted); text-align: center; }
+        .user-fields-hint b { color: var(--primary-glow); }
+        @keyframes fieldsIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+        @media (prefers-reduced-motion: reduce) { .user-fields.reveal { animation: none; } }
+
+        /* Pulsante "Invia Scelta" al centro della barra (il badge Netlify non c'è più, niente spazio riservato) */
+        :root { --badge-space: 0px; }
+        .footer { justify-content: center; padding-right: 16px; padding-left: 16px; }
+        .btn-order { width: 100%; max-width: 420px; margin: 0 auto; justify-content: center; }
+        .btn-label { align-items: center; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="xmas-snow" aria-hidden="true"></div>
+
+<div class="header-sticky">
     <div class="header-top">
         <div class="logo-container">
             <div class="logo-electric-wrapper">
-                <img src="https://dl.dropboxusercontent.com/scl/fi/ovkjoonga5w95u2y30i36/logo.png?rlkey=v1re74ojki06d1itnfmz3oeei&st=gollqylm&e=1&dl=0" alt="Logo" class="main-logo"> <!-- Logo del negozio -->
+                <img src="https://dl.dropboxusercontent.com/scl/fi/ovkjoonga5w95u2y30i36/logo.png?rlkey=v1re74ojki06d1itnfmz3oeei&st=gollqylm&e=1&dl=0" alt="Logo" class="main-logo">
             </div>
-            <div class="header-title"> <span class="badge-live">Bibite a Domicilio Online</span></div> <!-- Titolo con pallino verde -->
         </div>
-        <div class="search-container">
-            <input type="text" id="productSearch" placeholder="🔍 Cerca..." oninput="filterProducts()"> <!-- Filtra i prodotti mentre scrivi -->
+        <div class="header-title-box">
+            <h1 class="header-title">Cartellone BibiteShop</h1>
+            <span class="badge-live">€ 4.00 a numero</span>
+            <span class="badge-live">Estrazione 22 Dicembre 2026</span>
         </div>
     </div>
+    <div class="xmas-lights" aria-hidden="true"></div>
 </div>
 
-<div class="container"> <!-- Contenitore principale -->
+<div class="container">
     <div class="scrolling-banner">
-        <span class="bounce-text">Consegne Esclusivamente Con Ascensore</span> <!-- Avviso consegna -->
+        <span>Clicca sui numeri liberi per prenotarli • Paga comodamente da vicino</span>
     </div>
 
-    <div id="lateNotice" class="late-notice"></div> <!-- Avviso automatico dopo le 17:00 -->
+    <!-- CONTO ALLA ROVESCIA ESTRAZIONE -->
+    <div class="countdown-card" id="countdownBox">
+        <span class="countdown-title"> Estrazione tra</span>
+        <span class="countdown-time">
+            <span class="cd-unit"><b id="cdDays">--</b><small>g</small></span>
+            <span class="cd-unit"><b id="cdHours">--</b><small>h</small></span>
+            <span class="cd-unit"><b id="cdMinutes">--</b><small>m</small></span>
+            <span class="cd-unit"><b id="cdSeconds">--</b><small>s</small></span>
+        </span>
+        <span class="countdown-done"> È il momento dell'estrazione!</span>
+    </div>
 
-        <select id="zona" onchange="updateTotal(); showUserFields()" aria-label="Zona di consegna"> <!-- Selezione zona e costo spedizione -->
-            <option value="0" disabled selected>Scegli la zona di consegna</option>
-            <option value="2.50" data-zn="Soccavo">Soccavo (+€2.50)</option>
-            <option value="3.50" data-zn="Pianura">Pianura (+€3.50)</option>
-            <option value="3.50" data-zn="Vomero">Vomero (+€3.50)</option>
-            <option value="3.50" data-zn="Fuorigrotta">Fuorigrotta (+€3.50)</option>
-            <option value="4.00" data-zn="Posillipo">Posillipo (+€4.00)</option>
-        </select>
+    <!-- TABELLONE 3D 1-90 -->
+    <div class="tombola-section">
+        <div class="tombola-header"> Tabellone Numeri (1 - 90)</div>
+        <div class="tombola-sub">I numeri in rosso sono già occupati. Quelli in verde sono i tuoi selezionati. Tocca un numero rosso per leggere il nome completo.</div>
+        <div class="tombola-grid" id="tombolaGrid"></div>
+    </div>
 
-    <div class="user-fields" id="userFields"> <!-- Card dati consegna del cliente -->
-        <strong>📍 Dati Consegna (Obbligatorio)</strong>
-        <input type="text" id="cognome" placeholder="Cognome Cliente"> <!-- Input cognome -->
-        <input type="text" id="indirizzo" placeholder="Indirizzo e Civico"> <!-- Input indirizzo -->
-        <div class="date-field-group">
-            <label for="dataPrenotazione">📅 Data preferita di prenotazione</label> <!-- Etichetta data prenotazione -->
-            <input type="date" id="dataPrenotazione"> <!-- Input calendario data prenotazione -->
+    <!-- DATI CLIENTE: compare solo dopo aver scelto dei numeri e premuto "Invia Scelta" -->
+    <div class="user-fields" id="userFields" hidden>
+        <strong>I tuoi Dati per la Prenotazione</strong>
+        <input type="text" id="cognome" placeholder="Cognome e Nome (Obbligatorio)" maxlength="60">
+        <input type="text" id="indirizzo" placeholder="Indirizzo e Civico" maxlength="120">
+        <div class="user-fields-hint">Inserisci i tuoi dati e premi di nuovo <b>Invia Scelta</b> per completare la prenotazione.</div>
+    </div>
+
+    <!-- SEZIONE PREMI IN PALIO (3D GLASS) -->
+    <div class="prize-section">
+        <div class="prize-header">In Palio per questa Edizione </div>
+        <div class="prize-card-3d">
+            <div class="prize-magic">
+                <div class="prize-rays" aria-hidden="true"></div>
+                <div class="prize-aura" aria-hidden="true"></div>
+                <div class="prize-float">
+                    <img src="https://gfx3.senetic.com/akeneo-catalog/c/9/0/a/c90a0639db262f33a16a8c7a1948d6197b34a53f_1769777__normalized_image1.jpg" alt="Smartphone in palio" class="prize-img" loading="lazy" referrerpolicy="no-referrer">
+                    <div class="prize-shine" aria-hidden="true"></div>
+                </div>
+                <div class="prize-ground" aria-hidden="true"></div>
+            </div>
+            
+            <div class="prize-desc">
+                <strong>Samsung Galaxy A17 5G</strong><br>
+                Display da 6,7" (17 cm), Doppia SIM, Android 15,  128 GB di memoria, batteria da 5000 mAh e porta USB Type-C.
+            </div>
         </div>
     </div>
 
-    <div id="noResults" class="no-results">Nessun prodotto trovato.</div> <!-- Messaggio ricerca vuota -->
-    <div id="product-list"></div> <!-- Lista categorie/prodotti generata da JS -->
 </div>
 
-<div id="lightbox" class="lightbox" onclick="closeLightbox()" role="dialog" aria-modal="true" aria-label="Foto prodotto"> <!-- Visualizzazione foto ingrandita -->
-    <button class="lightbox-close" aria-label="Chiudi" onclick="closeLightbox()">✕</button>
-    <img id="lightbox-img" alt="">
-    <div id="lightbox-cap"></div>
+<!-- FOOTER CON INVIO WHATSAPP -->
+<div class="footer">
+    <button class="btn-order" onclick="sendWhatsApp()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;">
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.57 6.57 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.068-.315-.099-.447.099-.133.197-.513.646-.629.776-.117.13-.232.148-.43.05-.197-.099-.834-.308-1.587-.979-.586-.522-.982-1.168-1.097-1.365-.116-.197-.012-.304.086-.402.088-.088.197-.232.296-.347.099-.116.132-.197.197-.33.066-.133.033-.248-.016-.347-.05-.099-.447-1.077-.612-1.474-.161-.387-.325-.335-.447-.34-.117-.005-.251-.005-.385-.005-.133 0-.35.05-.533.248-.183.197-.7.684-.7 1.667 0 .984.717 1.937.817 2.069.101.133 1.41 2.154 3.417 3.023.477.207.85.33 1.14.423.477.152.911.13 1.254.079.384-.057 1.17-.478 1.335-.94.165-.462.165-.858.116-.94-.049-.082-.182-.133-.379-.232z"/>
+        </svg>
+        <span class="btn-label">Invia Scelta<small>€ <span id="total-val">0.00</span></small></span>
+    </button>
 </div>
+<div class="footer-bar" aria-hidden="true"></div>
 
-<div id="previewPane" class="preview-pane"> <!-- Pannello anteprima carrello -->
-    <h4>🛒 Carrello Attivo</h4>
-    <div id="previewContent">Seleziona prodotti per vederli qui.</div>
-    <button class="btn-clear" onclick="clearCart()">🗑 Svuota carrello</button>
-</div>
+<script>
+const MY_NUMBER = "393803497603";
+const PRICE_PER_NUMBER = 4.00;
+let selectedNumbers = [];
+let bookedDatabase = {};
+let bookedAt = {}; // quando è stato prenotato ogni numero (serve per far luccicare quelli di oggi)
+let db = null;
 
-<div class="footer"> <!-- Barra fissa inferiore -->
-    <div class="footer-btns">
-        <button class="btn-preview" onclick="togglePreview()">Anteprima</button> <!-- Apre/chiude anteprima -->
-        <button class="btn-order" onclick="sendWhatsApp()"> <!-- Invia ordine su WhatsApp -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;"> <!-- Icona SVG WhatsApp -->
-                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.57 6.57 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.068-.315-.099-.447.099-.133.197-.513.646-.629.776-.117.13-.232.148-.43.05-.197-.099-.834-.308-1.587-.979-.586-.522-.982-1.168-1.097-1.365-.116-.197-.012-.304.086-.402.088-.088.197-.232.296-.347.099-.116.132-.197.197-.33.066-.133.033-.248-.016-.347-.05-.099-.447-1.077-.612-1.474-.161-.387-.325-.335-.447-.34-.117-.005-.251-.005-.385-.005-.133 0-.35.05-.533.248-.183.197-.7.684-.7 1.667 0 .984.717 1.937.817 2.069.101.133 1.41 2.154 3.417 3.023.477.207.85.33 1.14.423.477.152.911.13 1.254.079.384-.057 1.17-.478 1.335-.94.165-.462.165-.858.116-.94-.049-.082-.182-.133-.379-.232z"/>
-            </svg>
-            Invia  € <span id="total-val">0.00</span> <!-- Totale dinamico -->
-        </button>
-    </div>
-</div>
-
-<div id="xmasBanner" class="xmas-overlay" role="dialog" aria-modal="true" aria-labelledby="xmasTitle" onclick="if(event.target===this)closeXmasBanner()"> <!-- Banner iniziale Cartellone di Natale -->
-    <div class="xmas-card">
-        <button class="xmas-close" aria-label="Chiudi" onclick="closeXmasBanner()">✕</button>
-        <div class="xmas-emoji" aria-hidden="true"></div>
-        <span class="xmas-kicker">Cartellone di Natale</span>
-        <h2 id="xmasTitle" class="xmas-title">Prenota il tuo numero di Natale!</h2>
-        <p class="xmas-text">Scegli il tuo numero dal tabellone e partecipa all’estrazione: in palio uno <strong>Samsung Galaxy A17 5G</strong>.</p>
-        <ul class="xmas-facts">
-            <li><small>Prezzo</small>€ 4,00 a numero</li>
-            <li><small>Estrazione</small>22 Dicembre</li>
-        </ul>
-        <a class="xmas-cta" id="xmasCta" href="https://cartellonebibiteshop.netlify.app/" target="_blank" rel="noopener" onclick="closeXmasBanner()">Acquista il tuo numero →</a>
-        <button class="xmas-later" onclick="closeXmasBanner()">Continua con le bibite</button>
-    </div>
-</div>
-
-<script> // Inizio codice JavaScript
-const MY_NUMBER = "393803497603"; // Numero WhatsApp del destinatario
-
-const PRODUCTS = { // Catalogo prodotti suddiviso per categoria (n = nome, p = prezzo, img = immagine)
-    "Acqua in plastica": [
-     {n: "Lete 1,5lt", p: 2.30, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246503709.jpg"},
-     {n: "FrizzOn 1,5lt", p: 2.30, img: "https://www.hellocasa.net/img/3647.jpg"},
- 	{n: "Vera 2lt", p: 2.40, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3248014180.jpg"},
- 	{n: "Sorgesana 2lt", p: 2.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246551541.jpg"},
-	{n: "Sepinia 2lt TERMINATA", p: 2.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935608941.jpg"},
- 	{n: "Sorgesana Frizzante 1,5lt", p: 2.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246553544.jpg"},
-        {n: "Ferrarelle 1,5lt", p: 2.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246483001.jpg"},
- 	{n: "San Benedetto 2lt", p: 2.30, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246521113.jpg"}, 
-	{n: "Uliveto 1,5lt", p: 3.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3248005128.jpg"},
- 	{n: "Rocchetta 1,5lt", p: 3.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246516621.jpg"},
-        {n: "Prata 2lt", p: 2.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247904238.jpg"},
-        {n: "Prata 1.5lt Frizzante", p: 2.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246524557.jpg"},
-        {n: "Lilia 1.5 naturale", p: 2.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3472543982.png"},
- 	{n: "Vitasnella 1,5lt", p: 3.30, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3248024471.jpg"},
- 	{n: "Levissima 1,5lt", p: 3.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246495973.jpg"},
-        {n: "Sant'Anna 1,5lt", p: 3.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3251413361.jpg"},
- 	{n: "Sant'Anna 2lt", p: 3.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246530445.jpg"},
- 	{n: "Panna 1,5lt", p: 3.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247912031.jpg"}, 
-	{n: "Sant'agata 1,5lt", p: 1.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246537324.jpg"},
-        {n: "Santo Stefano 2lt", p: 2.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246532364.jpg"},
-	 {n: "Santacroce 2lt", p: 2.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246522229.jpg"},
-	 {n: "Sveva 1,5lt", p: 2.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246537431.jpg"},
- 	{n: "Gaudianiello 1,5lt", p: 2.40, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246469202.jpg"},
-        {n: "Essenziale 1lt x6", p: 6.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246462539.jpg"},
- 	{n: "Fiuggi Plastica 1lt x6", p: 8.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3246460918.jpg"}
-    ],
-    "Acqua Piccola": [
-        {n: "Letex24", p: 6.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247809135.jpg"},
-	{n: "Lete 0,50x6", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935547580.jpg"},
-	{n: "FrizzOnx24", p: 6.00, img: "https://dl.dropboxusercontent.com/scl/fi/ocjcjh2gqrtucx35iy2mo/friz-onx24.jpg?rlkey=2vmxokjox8snip2augznfa406&st=yf7uyr10&dl=0"},
-	{n: "FrizzOn 0,50x6", p: 1.80, img: "https://dl.dropboxusercontent.com/scl/fi/2c6mjxwuawkx5vpkf6woo/Progetto-senza-titolo.jpg?rlkey=2j8tt65fv0lx024m74h2rvr63	&st=jsa4thjg&e=1&dl=0"},
-	{n: "Sorgesana x24 Naturale", p: 4.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247970302.jpg"},
-        {n: "Sorgesana 0,50x6", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935606105.jpg"},
-	{n: "Sepinia x24 Naturale", p: 4.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4587886292.jpg"},
-	{n: "Sorgesana x24 Frizzante", p: 5.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247969362.jpg"},
-	{n: "Sorgesana 0,50x6 Frizzante", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935594725.jpg"},
-        {n: "Sant'Anna x24 Naturale", p: 7.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3415840712.jpg"},
-	{n: "Vitasnella x24 Naturale", p: 8.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3248029058.jpg"},
-	{n: "Uliveto 0,50x24", p: 9.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3251436784.jpg"},
-	{n: "Rocchetta 0,50x24", p: 9.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247937272.jpg"},
-        {n: "San Benedetto Libera 0,50x6", p: 3.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935590025.jpg"},
-	{n: "San Benedetto x24 Naturale", p: 5.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247940149.jpg"},
-	{n: "San Benedetto x24 Frizzante", p: 5.00, img: "https://www.spesagiuliani.it/wp-content/uploads/2026/07/PRL50P.jpg"},
-	{n: "Ferrarelle x24 Rossa", p: 6.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247863306.jpg"},
-        {n: "Ferrarelle 50cl Maxima x24", p: 7.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3732551729.jpg"},
-	{n: "Vera x24 Naturale", p: 5.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3333020321.jpg"},
-	{n: "Santo Stefano x24 Naturale", p: 4.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3777970137.jpg"},
-	{n: "Sveva x24", p: 7.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247969436.jpg"},
-	{n: "Lilia x24 Naturale", p: 6.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3247912001.jpg"},
-	{n: "Levissima 0,50x6", p: 2.50, img: "https://www.cicalia.com/it/img/imgproducts/20213/l_20213.jpg"},
-	{n: "Sant'Anna Baby 25clx24", p: 9.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3459712478.jpg"},
-      {n: "Vera Baby 25clx4", p: 2.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935627875.jpg"},
-	{n: "Electa x24 Naturale", p: 7.00, img: "https://www.spesagiuliani.it/wp-content/uploads/2026/07/4-2.jpg"},
-	{n: "Electa 1ltx12", p: 7.00, img: "https://www.spesagiuliani.it/wp-content/uploads/2026/07/2-2.jpg"}
-    ],
-    "Acqua in Vetro": [
-        {n: "Lete Vetro 1lt x 12", p: 3.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3251380100.jpg"},
-	{n: "Prata Vetro 1lt x 12", p: 3.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3253494714.jpg"},
-	{n: "Ferrarelle Vetro 1lt x 12", p: 5.50, img: "https://prod-bevy-express-com.b-cdn.net/media/catalog/product//f/e/ferrarelle-12x075l-vetro-verde-acqua-sku-si-0135.webp"},
-        {n: "Electa Vetro 1lt x 12", p: 5.50, img: "https://prod-bevy-express-com.b-cdn.net/media/catalog/product//e/l/electa-12x075l-vetro-acqua-sku-si-1766_1_.webp"},
-	{n: "Fiuggi Vetro 1lt x 6", p: 9.00, img: "https://nonpesa.it/public/uploads/prodotti/img/8015962000052_1.jpg"},
-	{n: "Cauzione non Restituibile", p: 8.20, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAKQRyQGyPrkI0pZRydgu8XmKwZ00JimQ7qw&s"}
-    ],
-    "Bevande": [
-        {n: "Coca x 24", p: 17.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258412885.jpg"},
-	 {n: "Coca Zero x 24", p: 17.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255821644.jpg"},
-	{n: "Coca Zero x 24 senza caff.", p: 17.50, img: "https://m.media-amazon.com/images/I/715nLIROpIL._AC_SY300_SX300_QL70_ML2_.jpg"},
-        {n: "Coca 33cl singola", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924630500.jpg"},
-	{n: "Coca 33cl zero singola", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924624744.jpg"},
-	{n: "Coca 0,44cl PET (Orig/Zero)", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924616676.jpg"},
-        {n: "Coca Mini 150cl", p: 4.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4667133908.jpg"},
-	{n: "Coca Mini 150cl zero", p: 4.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4587921285.jpg"},
-	{n: "Coca 1,5 x6 (Orig)", p: 13.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255651962.jpg"},
-	{n: "Coca 1,5 x6 (zero)", p: 13.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258390872.jpg"},
-	{n: "Coca 1,5 singola (Orig)", p: 2.10, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924604529.jpg"},
-	{n: "Coca 1,5 singola (Zero)", p: 2.10, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924630545.jpg"},
-	{n: "Coca 1,5 singola (Senza Caffeina)", p: 2.20, img: "https://images.cosicomodo.it/sys-master/s3media/h46/h63/12205339639838/1500x1500_IMMAGINO_IMMAGINO_EAN5449000169358_1_renditions#1500x1500"},
-        {n: "Coca 2lt singola", p: 2.40, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924601982.jpg"},
-	{n: "Coca Vetro cl.20 x 4", p: 5.00, img: "https://sugros.com/static/upload/foto/50542/f57d026adac9f98e397e6ff21b55cbba.png"},
-	{n: "Coca Zero Vetro 33cl x 24", p: 26.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258418764.jpg"},
-	{n: "Coca Vetro 33cl x 24", p: 26.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258412890.jpg"},
-        {n: "Pepsi 2lt x 6", p: 10.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258328399.jpg"},
-	{n: "Pepsi 2lt singola", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3925204361.jpg"},
-	{n: "Pepsi 1,5 x 6", p: 8.45, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258318734.jpg"},
-	{n: "Pepsi 1,5 x 6 zero", p: 8.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3333076944.jpg"},
-	{n: "Pepsi 1,5 singola", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3925187979.jpg"},
-        {n: "Pepsi x 24 lattina", p: 11.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258319179.jpg"},
-	{n: "Pepsi x 24 zero lattina", p: 12.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3333115507.jpg"},
-	{n: "Pepsi 33cl singola", p: 0.65, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3925203847.jpg"},
-	{n: "Pepsi 33cl Max Zero sing.", p: 0.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3925232433.jpg"},
-        {n: "Pepsi Max 1,5 zero", p: 1.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3925204461.jpg"},
-	{n: "Pepsi Junior cl.33 x 4", p: 2.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933646133.jpg"},
-        {n: "Fanta x 24", p: 17.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255908064.jpg"},
-	{n: "Fanta 33cl singola", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924688237.jpg"},
-	{n: "Fanta 1,5 x 6", p: 11.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255903186.jpg"},
-	{n: "Fanta 1,5 singola (Orig)", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3920949392.jpg"},
-	{n: "Fanta 1,5 singola (Zero)", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3920949392.jpg"},
-	{n: "Sprite 1,5 x 6", p: 13.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258331586.jpg"},
-	{n: "Sprite 1,5", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935494213.jpg"},
-	{n: "Sprite 33cl singola", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935507250.jpg"},
-	{n: "Schweppes Limone 1L PET", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935482742.jpg"},
-        {n: "Schweppes Tonica 1L PET", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935491689.jpg"},
-	{n: "San Benedetto Limonata 1,5 Lt X 6", p: 6.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933666587.jpg"},
-	{n: "San Benedetto Cedrata 1,5", p: 1.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3929074931.jpg"},
-	{n: "San Benedetto Ginger 1,5", p: 1.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933651939.jpg"},
-        {n: "San Benedetto Gassosa 1,5", p: 1.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3929069973.jpg"},
-	{n: "San Benedetto Allegra 1,5", p: 1.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3929037424.jpg"},
-	{n: "San Benedetto Zero 75cl (aranciata)", p: 0.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933714793.jpg"},
-	{n: "San Benedetto Zero 75cl (limonata)", p: 0.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933720829.jpg"},
-	{n: "San Benedetto Zero 75cl (gassosa)", p: 0.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933722309.jpg"},
-	{n: "San Benedetto Zero 75cl (chinotto)", p: 0.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933698643.jpg"},
-      	{n: "San Benedetto Zero 75cl (ginger)", p: 0.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933708659.jpg"},
-	{n: "Chinotto Neri 1L", p: 1.50, img: "https://images.cosicomodo.it/sys-master/s3media/h1b/h40/9098496049182/DOK_MEGAMARK_EAN8010335010034_1_renditions_1500x1500#1500x1500"},
-        {n: "Tassoni Cedrata 4 x 180ml", p: 4.40, img: "https://images.cosicomodo.it/sys-master/s3media/h40/hec/10742235627550/1500x1500_IMMAGINO_IMMAGINO_EAN8005613000067_1_renditions#1500x1500"},
-	{n: "San Benedetto L'Analcolico Bitter Bianco x 6", p: 3.00, img: "https://images.cosicomodo.it/sys-master/s3media/hc0/hce/11735807393822/1500x1500_IMMAGINO_IMMAGINO_EAN8001620000472_1_renditions#1500x1500"},
-	{n: "San Benedetto L'Analcolico Bitter Rosso x 6", p: 3.00, img: "https://images.cosicomodo.it/sys-master/s3media/h08/hc8/11396482138142/1500x1500_IMMAGINO_IMMAGINO_EAN8001620302033_1_renditions#1500x1500"}
-    ],
-    "Thè": [
-        {n: "Thè 1,5 x 6 (Limone)", p: 6.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258328427.jpg"},
-  	{n: "Thè 1,5 x 6 (Pesca)", p: 6.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258331529.jpg"},
- 	{n: "Thè 1,5 singolo (Limone)", p: 1.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933667692.jpg"},
-        {n: "Thè 1,5 singolo (Pesca)", p: 1.20, img: "https://www.orvelmarket.it/wp-content/uploads/2020/11/the-san-benedetto-pesca-15.jpg"},
-	{n: "Thè 1,5 singolo (Limone zero)", p: 1.30, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933670734.jpg"},
-        {n: "Thè 1,5 singolo (Pesca zero)", p: 1.30, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933695517.jpg"},
-        {n: "Thè 0,50 x 12 (Limone)", p: 6.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258319672.jpg"},
- 	{n: "Thè 0,50 x 12 (Pesca)", p: 6.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258319210.jpg"},
- 	{n: "Thè x 24 lattina (Limone)", p: 12.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258331544.jpg"}, 
-        {n: "Thè x 24 lattina (Pesca)", p: 12.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258319689.jpg"},
-        {n: "Thè 0,33 cl singolo (Limone)", p: 0.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933682151.jpg"},
- 	{n: "Thè 0,33 cl singolo (Pesca)", p: 0.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933697535.jpg"}
-    ],
-    "Energizzanti": [
-        {n: "Energade 1,5 (Limone)", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924668903.jpg"},
-	 {n: "Energade 1,5 (Arancia)", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924639686.jpg"},
- 	{n: "Energade 1,5 (Arancia Rossa)", p: 1.80, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924668670.jpg"}, 
-        {n: "Energade 0,50 x 12 (Limone)", p: 10.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255881088.jpg"},
- 	{n: "Energade 0,50 x 12 Arancia", p: 10.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255878228.jpg"},
- 	{n: "Energade 0,50 x 12 Arancia Rossa", p: 10.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3255878233.jpg"},
-        {n: "Energade 0,50L (Limone) singolo", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924668958.jpg"},
- 	 {n: "Energade 0,50L (Arancia) singolo", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924661139.jpg"},
- 	 {n: "Energade 0,50L (Arancia Rossa) singolo", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924684271.jpg"},
-        {n: "Gatorade x 12 (Limone)", p: 13.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258316885.jpg"},
- 	{n: "Gatorade Arancia x 12", p: 13.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258313458.jpg"},
- 	{n: "Gatorade Arancia Rossa x 12", p: 13.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258309247.jpg"},
-	{n: "Gatorade Cool Blue x 12", p: 13.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258313463.jpg"},
-        {n: "Gatorade 0,50 (Limone) singolo", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924800126.jpg"},
- 	{n: "Gatorade 0,50 (Arancia) singolo", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924759873.jpg"},
-	 {n: "Gatorade 0,50 (Arancia Rossa) singolo", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924768999.jpg"},
-	 {n: "Gatorade 0,50 (Cool Blue) singolo", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3924767905.jpg"},
-        {n: "Red Bull classica", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3929071357.jpg"},
-	 {n: "Red Bull Sugar Free", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3933652590.jpg"},
-        {n: "Red Bull White Edition", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3929047421.jpg"}
-    ],
-    "Birre": [
-        {n: "Peroni 66cl x 15", p: 19.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249825778.jpg"},
- 	{n: "Peroni 66cl singola", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935725201.jpg"},
-	{n: "Peroni 33cl x 24", p: 19.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249782306.jpg"},
- 	{n: "Peroni 33cl", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935735023.jpg"},
-        {n: "Peroni lattina x 24", p: 20.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249780569.jpg"},
- 	{n: "Peroni Chill Limone 33cl", p: 1.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935747018.jpg"},
- 	{n: "Nastro Azzurro 62cl x 12", p: 19.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3777938379.jpg"},
-        {n: "Nastro Azzurro 62cl", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3920977376.jpg"},
- 	{n: "Nastro Azzurro 33cl x 24", p: 24.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249774279.jpg"},
- 	{n: "Nastro Azzurro 3 x 33cl", p: 3.40, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935714793.jpg"},
-        {n: "Heineken 66cl x 15", p: 26.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249803691.jpg"},
- 	{n: "Heineken 66cl", p: 1.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935683556.jpg"},
- 	{n: "Heineken 33cl x 24", p: 25.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249740969.jpg"},
- 	{n: "Heineken 3 x 33cl", p: 3.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935660980.jpg"},
-        {n: "Corona 32,5cl x 24", p: 33.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249743580.jpg"},
-	{n: "Corona Extra 32cl", p: 1.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935676021.jpg"},
-	{n: "Ceres x 24", p: 43.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3249743573.jpg"},
-	{n: "Ceres 33", p: 2.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935664966.jpg"},
-        {n: "Tennents 33cl x 24", p: 42.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3264427554.jpg"},
-	{n: "Tennents 33", p: 2.10, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3935759406.jpg"},
-	{n: "Moretti 3 x 33cl", p: 2.90, img: "https://files.ekmcdn.com/b066b7/images/birra-moretti-italian-beer-bottles-330ml-x-24-4.6-case-59306-p.jpg"},
- 	{n: "Moretti 66cl", p: 1.60, img: "https://kicceamodica.com/cdn/shop/files/birra_Moretti.jpg?v=1745783829&width=1800"},
-        {n: "Ichnusa 0,50L Non Filtr.", p: 1.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4587951237.jpg"},
-	{n: "Beck's 33 x 24cl", p: 25.50, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3415898309.jpg"},
-	{n: "Beck's 33cl", p: 1.20, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3415898309.jpg"},
-        {n: "Tavernello 1L (Rosato)", p: 2.10, img: "https://www.cicalia.com/it/img/imgproducts/20108/l_20108.jpg"},
- 	{n: "Tavernello 1L (Rosso)", p: 2.10, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3343235520.jpg"},
-	{n: "Tavernello 1L (Bianco)", p: 2.10, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3343226189.jpg"}
-    ],
-    "Succhi di Frutta": [
-        {n: "Yoga 1L x6 (Ace)", p: 10.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258515116.jpg"},
-	{n: "Yoga 1L x6 (Albicocca)", p: 10.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258509845.jpg"},
-	{n: "Yoga 1L x6 (Pesca)", p: 10.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258515191.jpg"},	
-        {n: "Yoga 1L x6 (Pera)", p: 10.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258523532.jpg"},
-	{n: "Yoga 1L Ananas x6", p: 12.00, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4602633174.jpg"},
-        {n: "Yoga 1L (Ace)", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3961388388.jpg"},
-	{n: "Yoga 1L (Albicocca)", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3961389581.jpg"},
-	{n: "Yoga 1L (Pesca)", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3961402923.jpg"},
-	{n: "Yoga 1L (Mela Banana)", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3961402856.jpg"},
-	{n: "Yoga 1L (Pera)", p: 1.60, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3961407352.jpg"},
-	{n: "Yoga 1L (Ananas)", p: 1.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4602631891.png"},
-	{n: "Yoga Brik x 3 (Ace)", p: 1.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258508892.jpg"},
-	{n: "Yoga Brik x 3 (Albicocca)", p: 1.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258526507.jpg"},
-	{n: "Yoga Brik x 3 (Pesca)", p: 1.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258515196.jpg"},
-	{n: "Yoga Brik x 3 (Pera)", p: 1.70, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/3258515179.jpg"},
-        {n: "Valfrutta 1,5L (Ace)", p: 2.00, img: "https://images.cosicomodo.it/sys-master/s3media/h2c/hb0/11332920049694/1500x1500_IMMAGINO_IMMAGINO_EAN8001440115332_1_renditions#1500x1500"}, 
-	{n: "Valfrutta 1,5L (Ananas)", p: 2.00, img: "https://images.cosicomodo.it/sys-master/s3media/h36/h82/11332966776862/1500x1500_IMMAGINO_IMMAGINO_EAN8001440115356_1_renditions#1500x1500"}, 
-	{n: "Skipper 1L (Pompelmo)", p: 1.80, img: "https://images.cosicomodo.it/sys-master/s3media/h9d/h5f/11690572709918/1500x1500_IMMAGINO_IMMAGINO_EAN8000340473436_1_renditions#1500x1500"},
-	{n: "Skipper 1L (Ananas)", p: 1.80, img: "https://images.cosicomodo.it/sys-master/s3media/h66/h52/12160721977374/1500x1500_IMMAGINO_IMMAGINO_EAN80354710_1_renditions#1500x1500"},
-        {n: "Triangolini 12 x 100ml (Albicocca)", p: 4.00, img: "https://images.cosicomodo.it/sys-master/s3media/hb9/h57/12174729314334/1500x1500_IMMAGINO_IMMAGINO_EAN8001440127687_1_renditions#1500x1500"}, 
-	{n: "Triangolini 12 x 100ml (Pera)", p: 4.00, img: "https://images.cosicomodo.it/sys-master/s3media/h25/hb5/12174717386782/1500x1500_IMMAGINO_IMMAGINO_EAN8001440126628_1_renditions#1500x1500"},
-	{n: "S.Benedetto Succoso zero frutta mix 40 CL", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4588008446.jpg"},
-	{n: "S.Benedetto Succoso zero frutti rossi 40 CL", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4588008498.jpg"},
-	{n: "S.Benedetto Succoso zero arancia rossa 40 CL", p: 0.90, img: "https://d2j6dbq0eux0bg.cloudfront.net/images/77957781/4588008252.jpg"}
-    ],
-    "Latte e Pomodoro": [
-        {n: "Zymil Latte 1L (Magro Digeribile)", p: 2.00, img: "https://images.cosicomodo.it/sys-master/s3media/h1d/hbe/11134175182878/1500x1500_IMMAGINO_IMMAGINO_EAN8002580004180_1_renditions#1500x1500"},
-	{n: "Zymil Latte 1L (Buono Digeribile)", p: 2.00, img: "https://images.cosicomodo.it/sys-master/s3media/h13/h18/11134119575582/1500x1500_IMMAGINO_IMMAGINO_EAN8002580004166_1_renditions#1500x1500"},
- 	{n: "Granarolo Latte Uht Parzialmente Scremato Lt.1", p: 1.40, img: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcR9LyWnt19nXxJfTNbbuhlZ7YbnLxW4Ww2nELrTMX5Q11sVllLzGdDboSpwLyJMuNjTfmgHTLVBzN7Oe_Nzn8QE6jcQAtVrvQ"},
- 	{n: "Arborea Parzialmente Scremato UHT 1lt", p: 1.40, img: "https://images.cosicomodo.it/sys-master/s3media/h8d/hac/11470054621214/1500x1500_IMMAGINO_IMMAGINO_EAN8002724002966_1_renditions#1500x1500"},
-        {n: "Cirio Passata Verace 780 gr", p: 1.60, img: "https://images.cosicomodo.it/sys-master/s3media/h4f/h5c/11984760274974/1500x1500_IMMAGINO_IMMAGINO_EAN8001440133435_1_renditions#1500x1500"},
- 	{n: "Mutti Passata di Pomodoro 800 gr", p: 1.60, img: "https://images.cosicomodo.it/sys-master/s3media/ha4/h42/9157863440414/IMMAGINO_IMMAGINO_EAN8005110080081_1_renditions_1500x1500#1500x1500"},
- 	{n: "Star Pummarò Corposa 700 gr", p: 1.45, img: "https://images.cosicomodo.it/sys-master/s3media/hc6/h0c/12059592917022/1500x1500_IMMAGINO_IMMAGINO_EAN8032793345008_1_renditions#1500x1500"},
-        {n: "la fiammante la Passata con Basilico 680 gr", p: 1.40, img: "https://images.cosicomodo.it/sys-master/s3media/h3a/h44/11166021451806/1500x1500_IMMAGINO_IMMAGINO_EAN8001737100539_1_renditions#1500x1500"},
-        {n: "Mutti Polpa di Pomodoro 2 x 400 gr", p: 2.20, img: "https://images.cosicomodo.it/sys-master/s3media/h5e/h55/8883655180318/IMMAGINO_IMMAGINO_EAN8005110170225_1_renditions_600x600#600x600"},
- 	{n: "Cirio Polpa Finissima 2 x 400 gr", p: 2.00, img: "https://images.cosicomodo.it/sys-master/s3media/h4b/hbf/11605101936670/600x600_IMMAGINO_IMMAGINO_EAN8001440124716_1_renditions#1500x1500"},
-	{n: "la fiammante il Pelato 400 gr", p: 1.00, img: "https://images.cosicomodo.it/sys-master/s3media/h1c/hcf/11152637558814/1500x1500_IMMAGINO_IMMAGINO_EAN8001737101055_1_renditions#1500x1500"}
-    ]
+// Configurazione Firebase integrata dal tuo progetto
+const firebaseConfig = {
+    apiKey: "AIzaSyC2GLEbLUFDCZ1__MWMMgMArto6PCulSou",
+    authDomain: "tombola-29952.firebaseapp.com",
+    projectId: "tombola-29952",
+    storageBucket: "tombola-29952.appspot.com",
+    messagingSenderId: "464891640618",
+    appId: "1:464891640618:web:5085be025927f3a281bc53"
 };
 
-function render() { // Costruisce in HTML tutte le categorie e i prodotti
-    let html = "";
-    let catIdx = 0;
-    for (let category in PRODUCTS) {
-        html += `
-            <div class="cat-container" data-category="${category}">
-                <div class="cat-header" onclick="toggleCat(this)">
-                    <div class="cat-title"><span>${category}</span><span class="cat-badge"></span></div> 
-                    <div class="arrow-box"><span class="arrow">▼</span></div>
-                </div>
-                <div class="cat-content">
-                    <div class="cat-inner">
-        `;
-        PRODUCTS[category].forEach((p, pIdx) => {
-            const id = `prod-${catIdx}-${pIdx}`; // ID univoco per ogni prodotto
-            const imgSrc = p.img ? p.img : 'https://placehold.co/120x120/EEF1FF/2347FF?text=Bibita';
-            const isTerminated = p.n.toUpperCase().includes("TERMINATA");
-            
-            html += `
-                <div class="item ${isTerminated ? 'terminated' : ''}" data-name="${norm(p.n)}">
-                    <div class="item-info">
-                        <img src="${imgSrc}" id="img-${id}" class="prod-img" alt="${p.n}" loading="lazy" onclick="openLightbox(this)">
-                        <span class="item-name">${p.n}</span>
-                    </div>
-                    <div class="item-price">€ ${p.p.toFixed(2)}</div>
-                    <div class="qty-controls">
-                        <button onclick="changeQty('${id}', -1)">-</button>
-                        <input id="${id}" value="0" data-name="${p.n}" data-price="${p.p}" readonly>
-                        <button onclick="changeQty('${id}', 1)">+</button>
-                    </div>
-                </div>`;
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    
+    // Ascolta le prenotazioni in tempo reale sul cloud per tutti gli utenti
+    db.collection("tombola").onSnapshot((snapshot) => {
+        bookedDatabase = {};
+        bookedAt = {};
+        snapshot.forEach((doc) => {
+            bookedDatabase[doc.id] = doc.data().cognome;
+            bookedAt[doc.id] = doc.data().prenotatoIl; // undefined per le vecchie prenotazioni, null mentre sta ancora salvando
         });
-        html += `   </div>
-                </div>
-            </div>`;
-        catIdx++;
-    }
-    document.getElementById('product-list').innerHTML = html;
-}
-
-const MIN_ITEMS = 2;     // minimo di prodotti (pezzi) per ordine
-const CUTOFF_HOUR = 17;  // dopo quest'ora l'ordine viene elaborato il giorno dopo
-
-// Ora attuale a Roma, indipendente dal fuso del telefono del cliente
-function isAfterCutoff() {
-    const h = parseInt(new Intl.DateTimeFormat('it-IT', {
-        hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Rome'
-    }).format(new Date()), 10) % 24;
-    return h >= CUTOFF_HOUR;
-}
-
-function updateLateNotice() { // Mostra o nasconde il banner di orario limite
-    const el = document.getElementById('lateNotice');
-    el.textContent = `🕔 Ordini dopo le ${CUTOFF_HOUR}:00: verranno elaborati il giorno successivo`;
-    el.classList.toggle('show', isAfterCutoff());
-}
-
-// Helper: prezzi sempre in centesimi interi
-function priceCents(i) { return Math.round(parseFloat(i.dataset.price) * 100); }
-function zoneCents() { return Math.round((parseFloat(document.getElementById('zona').value) || 0) * 100); }
-function fmt(c) { return (c / 100).toFixed(2); }
-
-function cartTotals() { // Calcola subtotale, numero pezzi e costo consegna
-    let sub = 0, pieces = 0;
-    document.querySelectorAll('#product-list input').forEach(i => {
-        const q = parseInt(i.value, 10) || 0;
-        sub += q * priceCents(i);
-        pieces += q;
+        renderTombola();
     });
-    return { sub, pieces, deliv: zoneCents() };
+} catch(e) {
+    console.error("Errore Firebase:", e);
+    bookedDatabase = JSON.parse(localStorage.getItem('tombola_booked')) || {};
 }
 
-// Ricerca senza maiuscole e senza accenti ("the" trova "Thè")
-function norm(s) {
-    return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-function filterProducts() { // Filtra prodotti e apre le categorie con risultati
-    const query = norm(document.getElementById('productSearch').value);
-    const categories = document.querySelectorAll('.cat-container');
-    let foundAny = false;
+// true se la prenotazione è di oggi (le vecchie, senza data, non luccicano)
+function isBookedToday(v) {
+    if (v === undefined) return false;
+    const d = v === null ? new Date() : (v.toDate ? v.toDate() : new Date(v));
+    return d.toDateString() === new Date().toDateString();
+}
 
-    categories.forEach(cat => {
-        const content = cat.querySelector('.cat-content');
-        const header = cat.querySelector('.cat-header');
-        let foundInCategory = false;
-
-        cat.querySelectorAll('.item').forEach(item => {
-            const match = item.getAttribute('data-name').includes(query);
-            item.style.display = match ? '' : 'none';
-            if (match) foundInCategory = true;
-        });
-
-        if (foundInCategory) {
-            foundAny = true;
-            cat.style.display = 'block';
-            if (query && !content.classList.contains('active')) {
-                content.classList.add('active');
-                header.classList.add('active');
-                cat.dataset.searchOpen = '1';
-            }
+function renderTombola() {
+    const grid = document.getElementById('tombolaGrid');
+    if (!grid) return;
+    
+    let html = '';
+    for (let i = 1; i <= 90; i++) {
+        let numStr = i < 10 ? '0' + i : '' + i;
+        let isBooked = bookedDatabase[numStr];
+        let safeName = isBooked ? escapeHtml(isBooked) : '';
+        
+        if (isBooked) {
+            const todayCls = isBookedToday(bookedAt[numStr]) ? ' new-today' : '';
+            html += `<div class="num-cell booked${todayCls}" data-num="${numStr}" data-owner="${safeName}">
+                        ${numStr}
+                        <span class="owner">${safeName}</span>
+                     </div>`;
         } else {
-            cat.style.display = 'none';
-        }
-
-        if (!query && cat.dataset.searchOpen) {
-            content.classList.remove('active');
-            header.classList.remove('active');
-            delete cat.dataset.searchOpen;
-        }
-    });
-    document.getElementById('noResults').style.display = foundAny ? 'none' : 'block';
-}
-
-function toggleCat(header) { // Apre o chiude la categoria cliccata
-    delete header.parentElement.dataset.searchOpen;
-    header.classList.toggle('active');
-    header.nextElementSibling.classList.toggle('active');
-}
-
-function changeQty(id, delta) { // Modifica quantità (+1 / -1) e attiva l'animazione pop
-    const input = document.getElementById(id);
-    if (!input || input.dataset.name.toUpperCase().includes("TERMINATA")) return; 
-
-    let val = parseInt(input.value, 10) + delta;
-    if (val >= 0) input.value = val;
-
-    if (delta > 0) {
-        const imgEl = document.getElementById(`img-${id}`);
-        if (imgEl) {
-            imgEl.classList.remove('img-pop');
-            void imgEl.offsetWidth;
-            imgEl.classList.add('img-pop');
-            setTimeout(() => {
-                imgEl.classList.remove('img-pop');
-            }, 350);
+            let isSelected = selectedNumbers.includes(numStr);
+            let selClass = isSelected ? 'selected' : '';
+            html += `<div class="num-cell ${selClass}" id="num-${numStr}" onclick="toggleNumber('${numStr}')">
+                        ${numStr}
+                     </div>`;
         }
     }
-
+    grid.innerHTML = html;
     updateTotal();
-    if (document.getElementById('previewPane').style.display === 'block') updatePreview();
 }
 
-function togglePreview() { // Apre o chiude l'anteprima del carrello
-    const pane = document.getElementById('previewPane');
-    pane.style.display = pane.style.display === 'block' ? 'none' : 'block';
-    updatePreview();
-}
-
-function updatePreview() { // Aggiorna il contenuto dell'anteprima carrello
-    let html = "";
-    document.querySelectorAll('#product-list input').forEach(i => {
-        const q = parseInt(i.value, 10) || 0;
-        if (q > 0) {
-            html += `<div class="preview-item"><span>${q}x ${i.dataset.name}</span><strong>€${fmt(q * priceCents(i))}</strong></div>`;
-        }
-    });
-    if (html === "") {
-        document.getElementById('previewContent').innerHTML = "Il carrello è vuoto.";
-        return;
+function toggleNumber(num) {
+    if (bookedDatabase[num]) return;
+    
+    const index = selectedNumbers.indexOf(num);
+    const cell = document.getElementById(`num-${num}`);
+    
+    if (index > -1) {
+        selectedNumbers.splice(index, 1);
+        if(cell) cell.classList.remove('selected');
+    } else {
+        selectedNumbers.push(num);
+        if(cell) cell.classList.add('selected');
     }
-    const t = cartTotals();
-    html += `<hr class="preview-sep"><div class="preview-item"><span>Spesa Spedizione</span><strong>€${fmt(t.deliv)}</strong></div>`;
-    html += `<div class="preview-item preview-total"><strong>TOTALE COMPLESSIVO</strong><strong>€${fmt(t.sub + t.deliv)}</strong></div>`;
-    if (t.pieces < MIN_ITEMS) html += `<div class="preview-item preview-warn">⚠️ Ordine minimo ${MIN_ITEMS} prodotti: ne mancano ${MIN_ITEMS - t.pieces}</div>`;
-    document.getElementById('previewContent').innerHTML = html;
-}
-
-// Evidenzia in verde i prodotti scelti e mostra il numero di pezzi sulla categoria
-function refreshSelection() {
-    document.querySelectorAll('.cat-container').forEach(cat => {
-        let total = 0;
-        cat.querySelectorAll('.item').forEach(item => {
-            const q = parseInt(item.querySelector('.qty-controls input').value, 10) || 0;
-            item.classList.toggle('selected', q > 0);
-            total += q;
-        });
-        const badge = cat.querySelector('.cat-badge');
-        const txt = total > 0 ? String(total) : '';
-        if (badge.textContent !== txt) {
-            badge.textContent = txt;
-            badge.classList.toggle('show', total > 0);
-            if (total > 0) {
-                badge.classList.remove('pop');
-                void badge.offsetWidth;
-                badge.classList.add('pop');
-            }
-        }
-    });
-}
-
-function updateTotal() { // Aggiorna il totale visualizzato sul pulsante di invio
-    const t = cartTotals();
-    document.getElementById('total-val').innerText = fmt(t.sub + t.deliv);
-    refreshSelection();
-}
-
-function showUserFields() { // Mostra la card dati consegna quando è selezionata una zona
-    if (document.getElementById('zona').selectedIndex > 0) document.getElementById('userFields').classList.add('show');
-}
-
-function clearCart() { // Azzera tutte le quantità nel carrello
-    if (!confirm("Svuotare il carrello?")) return;
-    document.querySelectorAll('#product-list input').forEach(i => i.value = 0);
     updateTotal();
-    if (document.getElementById('previewPane').style.display === 'block') updatePreview();
 }
 
-// ---- Foto a schermo intero
-function openLightbox(img) { // Apre l'immagine a schermo intero
-    document.getElementById('lightbox-img').src = img.src;
-    document.getElementById('lightbox-img').alt = img.alt;
-    document.getElementById('lightbox-cap').textContent = img.alt;
-    document.getElementById('lightbox').classList.add('open');
-    document.body.style.overflow = 'hidden';
+function showUserFields() {
+    const box = document.getElementById('userFields');
+    if (!box || !box.hidden) return false; // già visibile (oppure non esiste)
+    box.hidden = false;
+    box.classList.remove('reveal'); void box.offsetWidth; box.classList.add('reveal');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function () { const c = document.getElementById('cognome'); if (c && !c.value) c.focus({ preventScroll: true }); }, 450);
+    return true;
 }
 
-function closeLightbox() { // Chiude il lightbox
-    document.getElementById('lightbox').classList.remove('open');
-    document.body.style.overflow = '';
+function hideUserFields() {
+    const box = document.getElementById('userFields');
+    if (box) box.hidden = true;
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-function formatWeekdayDate(isoDate) { // Converte "AAAA-MM-GG" in es. "venerdì 20 novembre"
-    const [yyyy, mm, dd] = isoDate.split('-').map(Number);
-    const d = new Date(Date.UTC(yyyy, mm - 1, dd, 12, 0, 0)); // Usa mezzogiorno UTC per evitare cambi di giorno
-    return new Intl.DateTimeFormat('it-IT', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        timeZone: 'Europe/Rome'
-    }).format(d);
+function updateTotal() {
+    if (selectedNumbers.length === 0) hideUserFields();
+    let total = selectedNumbers.length * PRICE_PER_NUMBER;
+    const totalEl = document.getElementById('total-val');
+    if (totalEl) totalEl.innerText = total.toFixed(2);
 }
 
-function sendWhatsApp() { // Controlla i campi, formatta la data e apre WhatsApp con il riepilogo
+async function sendWhatsApp() {
+    if (selectedNumbers.length === 0) return alert("Seleziona almeno un numero dal tabellone!");
+
+    // 1° tocco: compare la card con nome e indirizzo; l'invio vero parte al 2° tocco
+    if (showUserFields()) return;
+
     const cog = document.getElementById('cognome').value.trim();
     const ind = document.getElementById('indirizzo').value.trim();
-    const dataPren = document.getElementById('dataPrenotazione').value;
-    const zonaTest = document.getElementById('zona');
-    if (zonaTest.selectedIndex === 0) {
-        zonaTest.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return alert("Scegli la zona di consegna!");
-    }
-    if (!cog || !ind || !dataPren) return alert("Inserisci Cognome, Indirizzo e Data preferita di prenotazione!");
 
-    const dataFormattata = formatWeekdayDate(dataPren); // Es.: "venerdì 20 novembre"
-
-    const lines = [];
-    let sub = 0;
-    document.querySelectorAll('#product-list input').forEach(i => {
-        const q = parseInt(i.value, 10) || 0;
-        if (q > 0) {
-            const pc = priceCents(i);
-            lines.push(`▪️ *${q}×* ${i.dataset.name} — €${fmt(pc)} → *€${fmt(q * pc)}*`);
-            sub += q * pc;
+    if (!cog) { alert("Per favore inserisci il tuo *Cognome*!"); document.getElementById('cognome').focus(); return; }
+    
+    const waWindow = window.open('', '_blank');
+    
+    if (db) {
+        try {
+            const batch = db.batch();
+            selectedNumbers.forEach(num => {
+                batch.set(db.collection("tombola").doc(num), { cognome: cog, prenotatoIl: firebase.firestore.FieldValue.serverTimestamp() });
+            });
+            await batch.commit();
+        } catch (error) {
+            console.error("Errore prenotazione:", error);
+            if (waWindow) waWindow.close();
+            alert("Prenotazione non riuscita: probabilmente qualcuno ha appena preso uno dei numeri. Controlla il tabellone, riseleziona e riprova.");
+            selectedNumbers = [];
+            renderTombola();
+            return;
         }
-    });
-    if (lines.length === 0) return alert("Scegli almeno un prodotto!");
-    const pieces = cartTotals().pieces;
-    if (pieces < MIN_ITEMS) return alert(`Ordine minimo ${MIN_ITEMS} prodotti: ne mancano ancora ${MIN_ITEMS - pieces}.`);
-    const late = isAfterCutoff();
-    if (late && !confirm(`Sono passate le ${CUTOFF_HOUR}:00: l'ordine verrà elaborato domani. Vuoi inviarlo lo stesso?`)) return;
-
-    const deliv = zoneCents();
-    const zn = zonaTest.options[zonaTest.selectedIndex].getAttribute('data-zn');
-    const bar = '━━━━━━━━━━━━━━━━━━━━━━━━━';
-    const order = [
-        '*NUOVO ORDINE — BIBITESHOP*',
-        bar,
-        ...(late ? [`🕔 *Dopo le ${CUTOFF_HOUR}:00 — da elaborare domani*`, ''] : []),
-        `👤 *Cliente:* ${cog}`,
-        `📍 *Indirizzo:* ${ind}`,
-        `🚚 *Zona:* ${zn}`,
-        `📅 *Data prenotazione:* ${dataFormattata}`,
-        bar,
-        ...lines,
-        bar,
-        `🧾 Prodotti: €${fmt(sub)}`,
-        `🚛  Consegna: €${fmt(deliv)}`,
-        bar,
-        `💰 *TOTALE DA PAGARE: € ${fmt(sub + deliv)}*`,
-        bar,
-        `🎰 *Estrazione:* 22 Dicembre — 1° estratto Napoli`,
-    ].join('\n');
-
-    window.open(`https://wa.me/${MY_NUMBER}?text=${encodeURIComponent(order)}`, '_blank');
+    } else {
+        selectedNumbers.forEach(num => {
+            bookedDatabase[num] = cog;
+        });
+        localStorage.setItem('tombola_booked', JSON.stringify(bookedDatabase));
+    }
+    
+    let totalCost = (selectedNumbers.length * PRICE_PER_NUMBER).toFixed(2);
+    
+    let order = ` PRENOTAZIONE CARTELLONE DI NATALE *%0A`;
+    order += `*Cliente:* ${cog}%0A`;
+    order += `*Indirizzo:* ${ind ? ind : 'Non specificato'}%0A`;
+    order += `----------------------------------------------%0A`;
+    order += ` *Numeri Scelti:* *${selectedNumbers.join(', ')}*%0A`;
+    order += `*Quantità:* ${selectedNumbers.length} numeri%0A`;
+    order += ` *TOTALE DA PAGARE:* *€ ${totalCost}* (Pagamento da vicino)%0A`;
+    order += ` *Estrazione:* 22 Dicembre 2026 - 1° estratto ruota di Napoli%0A`;
+    order += `----------------------------------------------%0A`;
+    order += `_Confermo la prenotazione dei numeri scelti._`;
+    
+    selectedNumbers = [];
+    renderTombola();
+    
+    const waUrl = `https://wa.me/${MY_NUMBER}?text=${order}`;
+    if (waWindow) { waWindow.location.href = waUrl; } else { window.location.href = waUrl; }
 }
 
-render(); // Genera i prodotti all'avvio
-try { localStorage.removeItem('bibiteshop_cart_v1'); } catch (e) {}
-updateTotal();
-showUserFields();
-updateLateNotice();
-setInterval(updateLateNotice, 60000);
+/* 💬 Fumetto con il nome completo di chi ha prenotato */
+(function () {
+    const tip = document.createElement('div');
+    tip.id = 'ownerTip';
+    tip.innerHTML = '<small></small><strong></strong>';
+    document.body.appendChild(tip);
+    let currentNum = null, timer = null;
 
-// Imposta la data minima prenotabile a oggi (ora di Roma)
-(function initMinDate() {
-    const dateInput = document.getElementById('dataPrenotazione');
-    if (dateInput) {
-        const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Rome' }).format(new Date());
-        dateInput.min = today;
+    function hide() { tip.classList.remove('show'); currentNum = null; clearTimeout(timer); }
+
+    function show(cell) {
+        tip.children[0].textContent = 'Numero ' + cell.dataset.num + ' · prenotato da';
+        tip.children[1].textContent = cell.dataset.owner;
+        tip.classList.add('show');
+        const r = cell.getBoundingClientRect();
+        const t = tip.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const left = Math.max(8, Math.min(cx - t.width / 2, window.innerWidth - t.width - 8));
+        let top = r.top - t.height - 10, below = false;
+        if (top < 84) { top = r.bottom + 10; below = true; } // 84 = spazio dell'header fisso
+        tip.style.left = left + 'px';
+        tip.style.top = top + 'px';
+        tip.style.setProperty('--ax', (cx - left) + 'px');
+        tip.classList.toggle('below', below);
+    }
+
+    document.addEventListener('click', e => {
+        const cell = e.target.closest('.num-cell.booked');
+        if (!cell || cell.dataset.num === currentNum) return hide();
+        currentNum = cell.dataset.num;
+        show(cell);
+        clearTimeout(timer);
+        timer = setTimeout(hide, 5000);
+    });
+    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('resize', hide);
+})();
+
+/* ✨ Magia sullo smartphone: scintille, e scoppio di stelle al tocco */
+(function () {
+    const box = document.querySelector('.prize-magic');
+    if (!box) return;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const colors = ['#ffd166', '#e63946', '#2a9d8f', '#ffffff'];
+    const STAR = '\u2726\uFE0E';
+
+    // x%, y%, dimensione px, ritardo s
+    [[6,12,18,0],[90,8,14,.6],[3,55,12,1.2],[93,50,20,1.8],[10,88,14,.9],[86,86,18,.3],[48,3,12,1.5],[70,93,12,2.1],[78,35,10,.4]]
+        .forEach(([x, y, s, d]) => {
+            const sp = document.createElement('span');
+            sp.className = 'sparkle';
+            sp.textContent = STAR;
+            sp.setAttribute('aria-hidden', 'true');
+            sp.style.cssText = `left:${x}%;top:${y}%;font-size:${s}px;animation-delay:${d}s`;
+            box.appendChild(sp);
+        });
+
+    function burst(x, y) {
+        if (calm) return;
+        for (let i = 0; i < 16; i++) {
+            const p = document.createElement('span');
+            const a = (Math.PI * 2 * i / 16) + Math.random() * 0.4;
+            const dist = 50 + Math.random() * 70;
+            p.className = 'burst';
+            p.textContent = STAR;
+            p.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.cos(a) * dist}px;--dy:${Math.sin(a) * dist}px;--c:${colors[i % 4]}`;
+            box.appendChild(p);
+            setTimeout(() => p.remove(), 950);
+        }
+    }
+
+    box.addEventListener('click', e => {
+        const r = box.getBoundingClientRect();
+        burst(e.clientX - r.left, e.clientY - r.top);
+    });
+
+    // Scoppio di benvenuto la prima volta che il premio entra nello schermo
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                burst(box.clientWidth / 2, box.clientHeight / 2);
+                io.disconnect();
+            }
+        }, { threshold: 0.6 });
+        io.observe(box);
     }
 })();
 
-// Banner d'apertura: Numero di Natale (si mostra fino al giorno dell'estrazione, una volta per visita)
-const XMAS_DRAW_END = new Date('2026-12-22T23:59:59');
-function closeXmasBanner() {
-    const b = document.getElementById('xmasBanner');
-    if (!b) return;
-    b.classList.remove('open');
-    document.body.style.overflow = '';
-    try { sessionStorage.setItem('xmas_banner_seen', '1'); } catch (e) {}
-}
-function openXmasBanner() {
-    const b = document.getElementById('xmasBanner');
-    if (!b) return;
-    b.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    const cta = document.getElementById('xmasCta');
-    if (cta) cta.focus();
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeXmasBanner(); });
-(function () {
-    let seen = false;
-    try { seen = sessionStorage.getItem('xmas_banner_seen') === '1'; } catch (e) {}
-    if (!seen && new Date() <= XMAS_DRAW_END) openXmasBanner();
+/*  Conto alla rovescia: 22 dicembre 2026, ore 20:00 (ora italiana) */
+(function countdown() {
+    const target = new Date('2026-12-22T20:00:00+01:00').getTime();
+    const pad = (n) => String(n).padStart(2, '0');
+    let timer = null;
+    function tick() {
+        const box = document.getElementById('countdownBox');
+        if (!box) return;
+        const diff = target - Date.now();
+        if (diff <= 0) {
+            box.classList.add('finita');
+            if (timer) clearInterval(timer);
+            return;
+        }
+        const sec = Math.floor(diff / 1000);
+        document.getElementById('cdDays').textContent = Math.floor(sec / 86400);
+        document.getElementById('cdHours').textContent = pad(Math.floor((sec % 86400) / 3600));
+        document.getElementById('cdMinutes').textContent = pad(Math.floor((sec % 3600) / 60));
+        document.getElementById('cdSeconds').textContent = pad(sec % 60);
+    }
+    function start() { tick(); timer = setInterval(tick, 1000); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
-</script> <!-- Fine codice JavaScript -->
-</body> <!-- Fine corpo della pagina -->
-</html> <!-- Fine documento HTML -->
+
+/*  A mezzanotte la pagina si aggiorna da sola: i numeri di ieri smettono di luccicare */
+(function scheduleMidnight() {
+    const n = new Date();
+    const next = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1, 0, 0, 1);
+    setTimeout(function () { renderTombola(); scheduleMidnight(); }, next - n);
+})();
+
+document.addEventListener("DOMContentLoaded", function() {
+    renderTombola();
+});
+renderTombola();
+</script>
+</body>
+</html>
